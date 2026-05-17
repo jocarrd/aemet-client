@@ -3,6 +3,10 @@
   "compilerOptions": {
     "rootDir": ".",
     "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "aemet-client": ["./src/index.ts"]
+    },
     "types": ["node", "vitest/globals"]
   },
   "include": ["src/**/*", "tests/**/*", "examples/**/*"]
