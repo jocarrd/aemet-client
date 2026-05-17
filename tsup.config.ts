@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig([
   {
-    entry: { index: "src/index.ts" },
+    entry: { index: "src/index.ts", data: "src/data/index.ts" },
     format: ["esm", "cjs"],
     dts: true,
     sourcemap: true,
@@ -11,6 +11,7 @@ export default defineConfig([
     splitting: false,
     minify: false,
     target: "node20",
+    loader: { ".json": "json" },
   },
   {
     entry: { cli: "src/cli.ts" },

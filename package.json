@@ -33,6 +33,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./data": {
+      "types": "./dist/data.d.ts",
+      "import": "./dist/data.js",
+      "require": "./dist/data.cjs"
     }
   },
   "bin": {
@@ -56,6 +61,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "build:data": "node scripts/build-municipalities.mjs",
     "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
   },
   "engines": {
