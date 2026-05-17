@@ -1,6 +1,7 @@
 import { AemetError } from "./errors.js";
 import { ObservationResource } from "./resources/observation/index.js";
 import { PredictionResource } from "./resources/prediction/index.js";
+import { WarningsResource } from "./resources/warnings/index.js";
 import { Transport, type FetchLike } from "./transport.js";
 
 export interface AemetClientConfig {
@@ -17,6 +18,7 @@ export class AemetClient {
   readonly transport: Transport;
   readonly prediction: PredictionResource;
   readonly observation: ObservationResource;
+  readonly warnings: WarningsResource;
 
   constructor(config: AemetClientConfig = {}) {
     const apiKey = config.apiKey ?? readEnvApiKey();
@@ -38,6 +40,7 @@ export class AemetClient {
     });
     this.prediction = new PredictionResource(this.transport);
     this.observation = new ObservationResource(this.transport);
+    this.warnings = new WarningsResource(this.transport);
   }
 }
 
