@@ -59,7 +59,7 @@
     "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
   },
   "engines": {
-    "node": ">=18.17"
+    "node": ">=20.18"
   },
   "packageManager": "pnpm@10.13.1",
   "devDependencies": {

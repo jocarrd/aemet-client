@@ -8,7 +8,7 @@ A typed TypeScript client for [AEMET OpenData](https://opendata.aemet.es/), the
 public API of Spain's State Meteorological Agency.
 
 > [Versión en español](README.es.md) · Cliente TypeScript tipado para la API
-> OpenData de AEMET. Funciona en Node.js 18+, Bun y Deno.
+> OpenData de AEMET. Funciona en Node.js 20+, Bun y Deno.
 
 Originally built for and used in production at [snowy.es](https://snowy.es) — a
 weather platform covering forecasts, warnings, real-time observations and
@@ -179,7 +179,7 @@ await aemet.prediction
 
 ## Runtime support
 
-- **Node.js** ≥ 18.17
+- **Node.js** ≥ 20.18
 - **Bun** (uses native fetch + node:zlib compat)
 - **Deno** (use the `npm:` specifier)
 - **Browsers**: the HTTP transport works. CAP gzip decoding uses

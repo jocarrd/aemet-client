@@ -10,7 +10,7 @@ export default defineConfig([
     treeshake: true,
     splitting: false,
     minify: false,
-    target: "node18",
+    target: "node20",
   },
   {
     entry: { cli: "src/cli.ts" },
@@ -20,7 +20,7 @@ export default defineConfig([
     treeshake: true,
     splitting: false,
     minify: false,
-    target: "node18",
+    target: "node20",
     banner: { js: "#!/usr/bin/env node" },
     outExtension: () => ({ js: ".js" }),
   },

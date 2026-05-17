@@ -7,7 +7,7 @@
 Cliente TypeScript tipado para [AEMET OpenData](https://opendata.aemet.es/), la
 API pública de la Agencia Estatal de Meteorología.
 
-> [English version](README.md) · Funciona en Node.js 18+, Bun y Deno. Una sola
+> [English version](README.md) · Funciona en Node.js 20+, Bun y Deno. Una sola
 > dependencia de runtime (`fast-xml-parser`).
 
 Construido originalmente para [snowy.es](https://snowy.es) — la plataforma
@@ -178,7 +178,7 @@ await aemet.prediction
 
 ## Compatibilidad de runtime
 
-- **Node.js** ≥ 18.17
+- **Node.js** ≥ 20.18
 - **Bun** (usa fetch nativo + node:zlib compatibility)
 - **Deno** (con el especificador `npm:`)
 - **Navegadores**: el transport HTTP funciona. La descompresión gzip de los
