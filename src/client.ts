@@ -1,3 +1,4 @@
+import type { CacheConfig } from "./cache/types.js";
 import { AemetError } from "./errors.js";
 import { AirQualityResource } from "./resources/airQuality/index.js";
 import { AntarcticaResource } from "./resources/antarctica/index.js";
@@ -21,6 +22,7 @@ export interface AemetClientConfig {
   retryBaseDelayMs?: number;
   fetch?: FetchLike;
   userAgent?: string;
+  cache?: CacheConfig;
 }
 
 export class AemetClient {
@@ -55,6 +57,7 @@ export class AemetClient {
         : {}),
       ...(config.fetch !== undefined ? { fetch: config.fetch } : {}),
       ...(config.userAgent !== undefined ? { userAgent: config.userAgent } : {}),
+      ...(config.cache !== undefined ? { cache: config.cache } : {}),
     });
     this.prediction = new PredictionResource(this.transport);
     this.observation = new ObservationResource(this.transport);

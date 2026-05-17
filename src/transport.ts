@@ -1,3 +1,4 @@
+import type { CacheConfig } from "./cache/types.js";
 import {
   AemetAuthError,
   AemetError,
@@ -25,11 +26,14 @@ export interface TransportConfig {
   retryBaseDelayMs?: number;
   fetch?: FetchLike;
   userAgent?: string;
+  cache?: CacheConfig;
 }
 
 export interface RequestOptions {
   signal?: AbortSignal;
   query?: Record<string, string | number | undefined>;
+  skipCache?: boolean;
+  cacheTtl?: number;
 }
 
 export interface EnvelopeResult<T> {
@@ -48,6 +52,7 @@ export class Transport {
   readonly #retryBaseDelayMs: number;
   readonly #fetch: FetchLike;
   readonly #userAgent: string;
+  readonly #cache?: CacheConfig;
 
   constructor(config: TransportConfig) {
     if (!config.apiKey) {
@@ -60,16 +65,42 @@ export class Transport {
     this.#retryBaseDelayMs = config.retryBaseDelayMs ?? DEFAULT_RETRY_BASE_DELAY_MS;
     this.#fetch = config.fetch ?? globalThis.fetch.bind(globalThis);
     this.#userAgent = config.userAgent ?? DEFAULT_USER_AGENT;
+    if (config.cache !== undefined) this.#cache = config.cache;
   }
 
   async request<T>(endpoint: string, options: RequestOptions = {}): Promise<EnvelopeResult<T>> {
+    const cacheKey = this.#cache && !options.skipCache ? this.#cacheKey(endpoint, options.query) : undefined;
+    if (cacheKey !== undefined && this.#cache) {
+      const cached = await this.#cache.adapter.get(cacheKey);
+      if (cached !== undefined) return cached as EnvelopeResult<T>;
+    }
     const envelope = await this.requestEnvelope(endpoint, options);
     const data = await this.resolveDatos<T>(envelope, options.signal);
     const metadata =
       envelope.metadatos !== undefined
         ? await this.fetchExternal<unknown>(envelope.metadatos, options.signal)
         : undefined;
-    return metadata !== undefined ? { data, metadata, envelope } : { data, envelope };
+    const result: EnvelopeResult<T> =
+      metadata !== undefined ? { data, metadata, envelope } : { data, envelope };
+    if (cacheKey !== undefined && this.#cache) {
+      const ttl = options.cacheTtl ?? this.#cache.ttl;
+      await this.#cache.adapter.set(cacheKey, result, ttl);
+    }
+    return result;
+  }
+
+  #cacheKey(endpoint: string, query?: Record<string, string | number | undefined>): string {
+    const path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+    let suffix = "";
+    if (query) {
+      const params = Object.entries(query)
+        .filter(([, v]) => v !== undefined)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([k, v]) => `${k}=${String(v)}`)
+        .join("&");
+      if (params) suffix = `?${params}`;
+    }
+    return `${this.#cache?.keyPrefix ?? "aemet"}:${path}${suffix}`;
   }
 
   async requestEnvelope(endpoint: string, options: RequestOptions = {}): Promise<AemetEnvelope> {

@@ -120,3 +120,4 @@ export {
   type GeoPoint,
   type NearestMatch,
 } from "./utils/geo.js";
+export { MemoryCacheAdapter, type CacheAdapter, type CacheConfig } from "./cache/index.js";
