@@ -59,4 +59,32 @@ export {
   type ClimatologyNormal,
   type StationInventoryEntry,
 } from "./resources/climatology/index.js";
+export {
+  BeachResource,
+  type BeachForecast,
+  type BeachForecastDay,
+  type PlayaCode,
+} from "./resources/beach/index.js";
+export {
+  MountainResource,
+  MOUNTAIN_AREAS,
+  type MountainArea,
+  type MountainPeriod,
+  type MountainForecast,
+  type MountainForecastDay,
+  type MountainForecastEntry,
+} from "./resources/mountain/index.js";
+export {
+  MaritimeResource,
+  type HighSeasArea,
+  type CoastalArea,
+  type MaritimeForecast,
+  type MaritimeForecastSubzone,
+} from "./resources/maritime/index.js";
+export {
+  RadarResource,
+  REGIONAL_RADARS,
+  type RegionalRadarCode,
+  type RadarImage,
+} from "./resources/radar/index.js";
 export { toAemetDate, parseSpanishNumber, type AemetDateInput } from "./utils/date.js";

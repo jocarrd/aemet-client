@@ -1,7 +1,11 @@
 import { AemetError } from "./errors.js";
+import { BeachResource } from "./resources/beach/index.js";
 import { ClimatologyResource } from "./resources/climatology/index.js";
+import { MaritimeResource } from "./resources/maritime/index.js";
+import { MountainResource } from "./resources/mountain/index.js";
 import { ObservationResource } from "./resources/observation/index.js";
 import { PredictionResource } from "./resources/prediction/index.js";
+import { RadarResource } from "./resources/radar/index.js";
 import { WarningsResource } from "./resources/warnings/index.js";
 import { Transport, type FetchLike } from "./transport.js";
 
@@ -21,6 +25,10 @@ export class AemetClient {
   readonly observation: ObservationResource;
   readonly warnings: WarningsResource;
   readonly climatology: ClimatologyResource;
+  readonly beach: BeachResource;
+  readonly mountain: MountainResource;
+  readonly maritime: MaritimeResource;
+  readonly radar: RadarResource;
 
   constructor(config: AemetClientConfig = {}) {
     const apiKey = config.apiKey ?? readEnvApiKey();
@@ -44,6 +52,10 @@ export class AemetClient {
     this.observation = new ObservationResource(this.transport);
     this.warnings = new WarningsResource(this.transport);
     this.climatology = new ClimatologyResource(this.transport);
+    this.beach = new BeachResource(this.transport);
+    this.mountain = new MountainResource(this.transport);
+    this.maritime = new MaritimeResource(this.transport);
+    this.radar = new RadarResource(this.transport);
   }
 }
 
