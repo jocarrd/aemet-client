@@ -1,10 +1,9 @@
 export const REGIONAL_RADARS = {
   almeria: "am",
-  asturias: "ss",
   barcelona: "ba",
-  cantabria: "lc",
-  canariasOccidental: "lp",
   caceres: "ca",
+  coruna: "lc",
+  laPalma: "lp",
   madrid: "mh",
   malaga: "ml",
   murcia: "mu",
