@@ -61,7 +61,6 @@
   "engines": {
     "node": ">=20.18"
   },
-  "packageManager": "pnpm@10.13.1",
   "devDependencies": {
     "@types/node": "^25.8.0",
     "@vitest/coverage-v8": "^4.1.6",
