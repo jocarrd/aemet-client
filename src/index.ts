@@ -11,3 +11,18 @@ export {
   type AemetErrorContext,
 } from "./errors.js";
 export { type AemetEnvelope, isAemetEnvelope } from "./types/envelope.js";
+export { Resource } from "./resources/base.js";
+export {
+  PredictionResource,
+  type MunicipioCode,
+  type ForecastOrigin,
+  type PeriodValue,
+  type PeriodDescribedValue,
+  type WindEntry,
+  type TemperatureEntry,
+  type MunicipalDailyForecast,
+  type MunicipalDailyForecastDay,
+  type MunicipalHourlyForecast,
+  type HourlyForecastDay,
+  type HourlyHumidityEntry,
+} from "./resources/prediction/index.js";
