@@ -1,6 +1,6 @@
 {
   "name": "aemet-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Typed TypeScript client for the AEMET OpenData API (Spanish State Meteorological Agency). Used in production at snowy.es.",
   "keywords": [
     "aemet",
