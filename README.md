@@ -7,8 +7,8 @@
 A typed TypeScript client for [AEMET OpenData](https://opendata.aemet.es/), the
 public API of Spain's State Meteorological Agency.
 
-> Cliente TypeScript tipado para la API OpenData de AEMET. Funciona en Node.js
-> 18+, Bun y Deno. Una sola dependencia de runtime (`fast-xml-parser`).
+> [Versión en español](README.es.md) · Cliente TypeScript tipado para la API
+> OpenData de AEMET. Funciona en Node.js 18+, Bun y Deno.
 
 Originally built for and used in production at [snowy.es](https://snowy.es) — a
 weather platform covering forecasts, warnings, real-time observations and
@@ -17,9 +17,10 @@ community a maintained, typed entry point to AEMET without having to reverse
 the API's quirks themselves.
 
 The AEMET API has a few rough edges — every response is a metadata envelope
-pointing to a second URL, CAP warnings ship as tar archives of XML files, and
-codes use mixed identifier formats. This library handles all of that and gives
-you typed, ergonomic methods.
+pointing to a second URL, CAP warnings ship as tar archives of XML files, daily
+climatological values use comma decimals, and codes use mixed identifier
+formats. This library handles all of that and gives you typed, ergonomic
+methods.
 
 ## Install
 
@@ -45,9 +46,6 @@ const forecast = await aemet.prediction.municipalDaily("28079");
 console.log(forecast[0].prediccion.dia[0].temperatura);
 // → { maxima: 28, minima: 14, dato: [...] }
 
-const stations = await aemet.observation.allStations();
-console.log(`Reporting stations: ${stations.length}`);
-
 const warnings = await aemet.warnings.latest("73");
 for (const doc of warnings) {
   const es = doc.alert.info.find((i) => i.language === "es-ES");
@@ -58,44 +56,59 @@ for (const doc of warnings) {
 If you don't pass `apiKey`, the client reads `AEMET_API_KEY` from the
 environment.
 
-## Resources
+## CLI
 
-### `client.prediction`
+`aemet-client` ships a CLI for ad-hoc queries:
 
-Municipal forecasts keyed by the 5-digit INE municipality code
-(e.g. `28079` for Madrid, `08019` for Barcelona).
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `municipalDaily(code)` | `/prediccion/especifica/municipio/diaria/{code}` | 7-day daily forecast |
-| `municipalHourly(code)` | `/prediccion/especifica/municipio/horaria/{code}` | 40-hour hourly forecast |
-
-### `client.observation`
-
-Real-time observations from the SYNOP station network.
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `allStations()` | `/observacion/convencional/todas` | Latest reading from every reporting station |
-| `station(idema)` | `/observacion/convencional/datos/estacion/{idema}` | Last 24 hours for one station |
-
-### `client.warnings`
-
-Active CAP 1.2 alerts. The area code is `esp` (national) or a 2-digit region
-code — `CAP_AREAS` exports a typed mapping:
-
-```ts
-import { CAP_AREAS } from "aemet-client";
-
-const docs = await aemet.warnings.latest(CAP_AREAS.cataluna);
+```bash
+npx aemet-client forecast 28079
+npx aemet-client warnings 73 --json
+npx aemet-client climate 3195 --from 2026-01-01 --to 2026-01-31
+npx aemet-client radar vc            # prints the regional radar GIF URL
+npx aemet-client radar --download > radar.gif
 ```
 
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `latest(area)` | `/avisos_cap/ultimoelaborado/area/{area}` | Active warnings for a region |
+Run `npx aemet-client --help` for the full list of subcommands.
 
-The response is an array of `CapDocument` objects — one per language. Each
-contains the parsed `CapAlert` plus the original XML in `raw`.
+## Resources
+
+| Resource | Methods | Endpoint family |
+| --- | --- | --- |
+| `prediction` | `municipalDaily`, `municipalHourly` | `/prediccion/especifica/municipio/*` |
+| `observation` | `allStations`, `station` | `/observacion/convencional/*` |
+| `warnings` | `latest` | `/avisos_cap/ultimoelaborado/*` |
+| `climatology` | `daily`, `monthly`, `normals`, `stationInventory` | `/valores/climatologicos/*` |
+| `beach` | `forecast` | `/prediccion/especifica/playa/{code}` |
+| `mountain` | `forecast`, `past` | `/prediccion/especifica/montaña/*` |
+| `maritime` | `highSeas`, `coastal` | `/prediccion/maritima/*` |
+| `radar` | `nationalUrl`, `regionalUrl`, `nationalImage`, `regionalImage` | `/red/radar/*` |
+
+Each method returns the parsed `datos` payload after the two-step envelope is
+resolved transparently. See [docs/endpoints.md](docs/endpoints.md) for the full
+parameter and response reference.
+
+### Typed code maps
+
+```ts
+import { CAP_AREAS, MOUNTAIN_AREAS, REGIONAL_RADARS } from "aemet-client";
+
+await aemet.warnings.latest(CAP_AREAS.cataluna);
+await aemet.mountain.forecast(MOUNTAIN_AREAS.pirineoAragones, 0);
+await aemet.radar.regionalUrl(REGIONAL_RADARS.valencia);
+```
+
+### Spanish-decimal helper
+
+Climatological endpoints return values like `"5,2"` or `"1.020,4"`. Use
+`parseSpanishNumber` to convert them:
+
+```ts
+import { parseSpanishNumber } from "aemet-client";
+
+parseSpanishNumber("5,2");      // 5.2
+parseSpanishNumber("1.020,4");  // 1020.4
+parseSpanishNumber("");         // undefined
+```
 
 ## Error handling
 
@@ -159,7 +172,7 @@ Every resource method accepts a `signal: AbortSignal`:
 const controller = new AbortController();
 setTimeout(() => controller.abort(), 5_000);
 
-const forecast = await aemet.prediction
+await aemet.prediction
   .municipalDaily("28079", { signal: controller.signal })
   .catch(() => null);
 ```
@@ -174,20 +187,17 @@ const forecast = await aemet.prediction
   pure JS. Note that AEMET OpenData does not send CORS headers — direct
   browser calls will be blocked; proxy through your backend.
 
-## Project status
+## Testing
 
-| Feature | Status |
-| --- | --- |
-| Transport, retries, errors | done |
-| Municipal daily / hourly forecasts | done |
-| Conventional station observations | done |
-| CAP warnings (tar + XML parsing) | done |
-| Climatological values | planned |
-| Maritime forecasts | planned |
-| Radar / satellite imagery | planned |
-| Antarctica + special network | planned |
+```bash
+pnpm test          # unit tests (70+, fully mocked)
+pnpm test:e2e      # opt-in live tests, skipped without AEMET_API_KEY
+pnpm typecheck
+pnpm lint
+```
 
-Open an issue if you need an endpoint that isn't covered yet.
+The E2E suite hits the real API and is also wired into CI behind a repository
+secret.
 
 ## License
 
