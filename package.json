@@ -35,9 +35,13 @@
       "require": "./dist/index.cjs"
     }
   },
+  "bin": {
+    "aemet-client": "./dist/cli.js"
+  },
   "files": [
     "dist",
     "README.md",
+    "README.es.md",
     "LICENSE"
   ],
   "scripts": {
