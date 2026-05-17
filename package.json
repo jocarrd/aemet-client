@@ -1,0 +1,70 @@
+{
+  "name": "aemet-client",
+  "version": "0.1.0",
+  "description": "Typed TypeScript client for the AEMET OpenData API (Spanish State Meteorological Agency).",
+  "keywords": [
+    "aemet",
+    "opendata",
+    "weather",
+    "meteorology",
+    "spain",
+    "forecast",
+    "radar",
+    "warnings",
+    "cap",
+    "api-client"
+  ],
+  "homepage": "https://github.com/jocarrd/aemet-client#readme",
+  "bugs": {
+    "url": "https://github.com/jocarrd/aemet-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jocarrd/aemet-client.git"
+  },
+  "license": "MIT",
+  "author": "Jorge Carrera <jorgecarrera98d@gmail.com>",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "packageManager": "pnpm@10.13.1",
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
+  }
+}
