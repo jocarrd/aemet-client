@@ -10,6 +10,12 @@ public API of Spain's State Meteorological Agency.
 > Cliente TypeScript tipado para la API OpenData de AEMET. Funciona en Node.js
 > 18+, Bun y Deno. Una sola dependencia de runtime (`fast-xml-parser`).
 
+Originally built for and used in production at [snowy.es](https://snowy.es) — a
+weather platform covering forecasts, warnings, real-time observations and
+maritime data for Spain. Released as open source to give the meteorology dev
+community a maintained, typed entry point to AEMET without having to reverse
+the API's quirks themselves.
+
 The AEMET API has a few rough edges — every response is a metadata envelope
 pointing to a second URL, CAP warnings ship as tar archives of XML files, and
 codes use mixed identifier formats. This library handles all of that and gives
