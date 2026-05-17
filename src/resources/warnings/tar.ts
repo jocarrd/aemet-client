@@ -31,6 +31,11 @@ export function parseTar(buffer: Uint8Array): TarEntry[] {
     const typeFlag = String.fromCharCode(header[TYPE_FLAG_OFFSET] ?? 0);
     const dataStart = offset + BLOCK_SIZE;
     const dataEnd = dataStart + size;
+    if (dataEnd > buffer.length) {
+      throw new Error(
+        `Tar archive is truncated: entry "${name}" declares ${size} bytes but only ${buffer.length - dataStart} are available.`,
+      );
+    }
     const content = buffer.subarray(dataStart, dataEnd);
     entries.push({
       name,

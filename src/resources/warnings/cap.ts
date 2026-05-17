@@ -17,6 +17,7 @@ const parser = new XMLParser({
   ignoreAttributes: true,
   parseTagValue: false,
   trimValues: true,
+  removeNSPrefix: true,
 });
 
 export function parseCapXml(xml: string): CapAlert {

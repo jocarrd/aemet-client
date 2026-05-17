@@ -174,6 +174,16 @@ describe("Tar parser edge cases", () => {
   it("returns empty array for an empty buffer", () => {
     expect(parseTar(new Uint8Array(0))).toEqual([]);
   });
+
+  it("throws on a truncated entry", () => {
+    const truncated = new Uint8Array(700);
+    truncated.set(new TextEncoder().encode("test.txt"), 0);
+    const sizeStr = (500).toString(8).padStart(11, "0");
+    truncated.set(new TextEncoder().encode(sizeStr), 124);
+    truncated[156] = "0".charCodeAt(0);
+    truncated.set(new TextEncoder().encode("ustar"), 257);
+    expect(() => parseTar(truncated)).toThrow(/truncated/i);
+  });
 });
 
 describe("CAP parser edge cases", () => {
@@ -237,6 +247,31 @@ Linea 3</description>
 
   it("rejects an entirely empty XML", () => {
     expect(() => parseCapXml("")).toThrow();
+  });
+
+  it("parses CAP documents that use a namespace prefix", () => {
+    const xml = `<?xml version="1.0"?>
+<cap:alert xmlns:cap="urn:oasis:names:tc:emergency:cap:1.2">
+  <cap:identifier>ns-1</cap:identifier>
+  <cap:sender>aemet@aemet.es</cap:sender>
+  <cap:sent>2026-05-17T08:00:00+02:00</cap:sent>
+  <cap:status>Actual</cap:status>
+  <cap:msgType>Alert</cap:msgType>
+  <cap:scope>Public</cap:scope>
+  <cap:info>
+    <cap:language>es-ES</cap:language>
+    <cap:event>Lluvias</cap:event>
+    <cap:urgency>Future</cap:urgency>
+    <cap:severity>Moderate</cap:severity>
+    <cap:certainty>Likely</cap:certainty>
+    <cap:senderName>AEMET</cap:senderName>
+    <cap:headline>h</cap:headline>
+    <cap:description>d</cap:description>
+  </cap:info>
+</cap:alert>`;
+    const alert = parseCapXml(xml);
+    expect(alert.identifier).toBe("ns-1");
+    expect(alert.info[0]?.event).toBe("Lluvias");
   });
 });
 
