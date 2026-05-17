@@ -148,7 +148,7 @@ export class Transport {
 
   async #fetchOnce(url: string, externalSignal?: AbortSignal): Promise<Response> {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), this.#timeoutMs);
+    const timeout = setTimeout(() => controller.abort(new Error("timeout")), this.#timeoutMs);
     const onExternalAbort = () => controller.abort(externalSignal?.reason);
     externalSignal?.addEventListener("abort", onExternalAbort);
     try {
@@ -161,6 +161,15 @@ export class Transport {
         },
         signal: controller.signal,
       });
+    } catch (error) {
+      if (externalSignal?.aborted) throw error;
+      if (controller.signal.aborted && isAbortError(error)) {
+        throw new AemetNetworkError(`Request timed out after ${this.#timeoutMs}ms.`, {
+          endpoint: url,
+          cause: error,
+        });
+      }
+      throw error;
     } finally {
       clearTimeout(timeout);
       externalSignal?.removeEventListener("abort", onExternalAbort);
@@ -185,7 +194,7 @@ export class Transport {
     if (response.status >= 500) {
       throw new AemetServerError({ endpoint, status: response.status });
     }
-    const text = await response.text();
+    const text = await readBodyText(response);
     if (!text) {
       throw new AemetInvalidResponseError("Empty response body.", {
         endpoint,
@@ -207,6 +216,20 @@ export class Transport {
     const base = this.#retryBaseDelayMs * 2 ** attempt;
     const jitter = Math.random() * this.#retryBaseDelayMs;
     return base + jitter;
+  }
+}
+
+async function readBodyText(response: Response): Promise<string> {
+  const contentType = response.headers.get("content-type") ?? "";
+  const charset = contentType.match(/charset=([^;]+)/i)?.[1]?.trim().toLowerCase();
+  if (!charset || charset === "utf-8" || charset === "utf8") {
+    return response.text();
+  }
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  try {
+    return new TextDecoder(charset, { fatal: false }).decode(bytes);
+  } catch {
+    return new TextDecoder("utf-8").decode(bytes);
   }
 }
 
