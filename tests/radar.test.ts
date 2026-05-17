@@ -66,4 +66,32 @@ describe("RadarResource", () => {
     await expect(c.radar.regionalUrl("1")).rejects.toBeInstanceOf(AemetError);
     await expect(c.radar.regionalImage("zzzz")).rejects.toBeInstanceOf(AemetError);
   });
+
+  it("downloads regional radar image bytes", async () => {
+    const imageBytes = new Uint8Array([0x47, 0x49, 0x46, 0x38, 0x39, 0x61]);
+    let call = 0;
+    const fetch: FetchLike = async () => {
+      call += 1;
+      if (call === 1) return jsonResponse(envelope("https://opendata.aemet.es/sh/img-vc.gif"));
+      return new Response(imageBytes as BlobPart, {
+        status: 200,
+        headers: { "content-type": "image/gif" },
+      });
+    };
+    const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
+    const result = await c.radar.regionalImage("vc");
+    expect(result.contentType).toBe("image/gif");
+    expect(result.bytes).toEqual(imageBytes);
+  });
+
+  it("surfaces an error when the image download fails", async () => {
+    let call = 0;
+    const fetch: FetchLike = async () => {
+      call += 1;
+      if (call === 1) return jsonResponse(envelope("https://opendata.aemet.es/sh/img.gif"));
+      return new Response("", { status: 404 });
+    };
+    const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1, maxRetries: 0 });
+    await expect(c.radar.nationalImage()).rejects.toBeInstanceOf(AemetError);
+  });
 });

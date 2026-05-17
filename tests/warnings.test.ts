@@ -126,4 +126,51 @@ describe("WarningsResource", () => {
     await expect(c.warnings.latest("invalid")).rejects.toBeInstanceOf(AemetError);
     await expect(c.warnings.latest("1")).rejects.toBeInstanceOf(AemetError);
   });
+
+  it("surfaces an error when the archive request fails", async () => {
+    let call = 0;
+    const fetch: FetchLike = async () => {
+      call += 1;
+      if (call === 1) {
+        return new Response(
+          JSON.stringify({
+            descripcion: "exito",
+            estado: 200,
+            datos: "https://opendata.aemet.es/sh/cap-archive",
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }
+      return new Response("", { status: 500 });
+    };
+    const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1, maxRetries: 0 });
+    await expect(c.warnings.latest("esp")).rejects.toBeInstanceOf(AemetError);
+  });
+
+  it("skips non-XML entries in the tar archive", async () => {
+    const tar = buildTar([
+      { name: "readme.txt", content: "not xml" },
+      { name: "alert.xml", content: CAP_SAMPLE_XML },
+    ]);
+    const fetch: FetchLike = async (url) => {
+      if (String(url).includes("/avisos_cap/")) {
+        return new Response(
+          JSON.stringify({
+            descripcion: "exito",
+            estado: 200,
+            datos: "https://opendata.aemet.es/sh/cap-archive",
+          }),
+          { status: 200, headers: { "content-type": "application/json" } },
+        );
+      }
+      return new Response(tar as BlobPart, {
+        status: 200,
+        headers: { "content-type": "application/x-tar" },
+      });
+    };
+    const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
+    const docs = await c.warnings.latest("esp");
+    expect(docs).toHaveLength(1);
+    expect(docs[0]?.filename).toBe("alert.xml");
+  });
 });
