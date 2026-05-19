@@ -1,6 +1,7 @@
 {
   "name": "aemet-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
+  "mcpName": "io.github.jocarrd/aemet-mcp",
   "description": "Model Context Protocol server for AEMET — Spain's national weather agency. Lets Claude, Cursor, Windsurf and other MCP clients answer questions about Spanish weather, forecasts and warnings.",
   "keywords": [
     "mcp",
