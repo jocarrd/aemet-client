@@ -312,6 +312,24 @@ pnpm lint
 The E2E suite hits the real API and is also wired into CI behind a repository
 secret.
 
+## Examples
+
+Runnable scripts in [`examples/`](examples/):
+
+- [`forecast-madrid.ts`](examples/forecast-madrid.ts) — municipal daily forecast.
+- [`active-warnings.ts`](examples/active-warnings.ts) — CAP warnings for a region.
+- [`nearest-station.ts`](examples/nearest-station.ts) — observation from the
+  closest station to a point.
+- [`coords-to-forecast-with-cache.ts`](examples/coords-to-forecast-with-cache.ts)
+  — resolve coordinates to a municipality with the embedded INE dataset and
+  fetch its forecast through an in-memory cache.
+
+## Companion package
+
+[`aemet-mcp`](../aemet-mcp) exposes this client as a Model Context Protocol
+server so LLM clients (Claude Desktop, Cursor, Windsurf, …) can answer
+questions about Spanish weather.
+
 ## License
 
 MIT © [Jorge Carrera](https://github.com/jocarrd)
