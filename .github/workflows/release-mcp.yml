@@ -1,14 +1,13 @@
-name: Release aemet-client
+name: Release aemet-mcp
 
 on:
   push:
     tags:
-      - "v*"
-      - "aemet-client-v*"
+      - "aemet-mcp-v*"
 
 jobs:
   publish:
-    name: Publish aemet-client to npm
+    name: Publish aemet-mcp to npm
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,23 +32,22 @@ jobs:
       - name: Verify tag matches package.json version
         run: |
           raw="${GITHUB_REF#refs/tags/}"
-          tag="${raw#aemet-client-v}"
-          tag="${tag#v}"
-          pkg=$(node -p "require('./packages/aemet-client/package.json').version")
+          tag="${raw#aemet-mcp-v}"
+          pkg=$(node -p "require('./packages/aemet-mcp/package.json').version")
           if [ "$tag" != "$pkg" ]; then
-            echo "::error::Tag $raw does not match aemet-client package version $pkg"
+            echo "::error::Tag $raw does not match aemet-mcp package version $pkg"
             exit 1
           fi
 
       - name: Typecheck
-        run: pnpm --filter aemet-client typecheck
+        run: pnpm -r typecheck
 
       - name: Test
-        run: pnpm --filter aemet-client test
+        run: pnpm --filter aemet-mcp test
 
       - name: Build
-        run: pnpm --filter aemet-client build
+        run: pnpm -r build
 
       - name: Publish
-        working-directory: packages/aemet-client
+        working-directory: packages/aemet-mcp
         run: npm publish --access public --provenance
