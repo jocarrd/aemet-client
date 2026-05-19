@@ -19,7 +19,7 @@ export class PredictionResource extends Resource {
       `/prediccion/especifica/municipio/diaria/${municipio}`,
       options,
     );
-    return data;
+    return data.map(normalizeForecast);
   }
 
   async municipalHourly(
@@ -31,8 +31,15 @@ export class PredictionResource extends Resource {
       `/prediccion/especifica/municipio/horaria/${municipio}`,
       options,
     );
-    return data;
+    return data.map(normalizeForecast);
   }
+}
+
+function normalizeForecast<T extends { id: string; version: string }>(item: T): T {
+  const out = { ...item };
+  if (item.id !== undefined && item.id !== null) out.id = String(item.id);
+  if (item.version !== undefined && item.version !== null) out.version = String(item.version);
+  return out;
 }
 
 function assertMunicipio(municipio: string): void {

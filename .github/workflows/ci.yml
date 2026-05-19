@@ -37,14 +37,14 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Build
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Test
         run: pnpm test
-
-      - name: Build
-        run: pnpm build
 
   e2e:
     name: E2E (live AEMET)
@@ -65,6 +65,9 @@ jobs:
 
       - name: Install
         run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm --filter aemet-client build
 
       - name: Run E2E tests
         env:

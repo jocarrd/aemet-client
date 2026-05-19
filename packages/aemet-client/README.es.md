@@ -311,6 +311,24 @@ pnpm lint
 La suite E2E se ejecuta también en CI cuando el repositorio tiene configurado
 el secret `AEMET_API_KEY`.
 
+## Ejemplos
+
+Scripts ejecutables en [`examples/`](examples/):
+
+- [`forecast-madrid.ts`](examples/forecast-madrid.ts) — predicción diaria municipal.
+- [`active-warnings.ts`](examples/active-warnings.ts) — avisos CAP de una CCAA.
+- [`nearest-station.ts`](examples/nearest-station.ts) — observación de la
+  estación más cercana a un punto.
+- [`coords-to-forecast-with-cache.ts`](examples/coords-to-forecast-with-cache.ts)
+  — resolver coordenadas a municipio con el dataset INE embebido y obtener
+  su predicción a través de una caché en memoria.
+
+## Paquete complementario
+
+[`aemet-mcp`](../aemet-mcp) expone este cliente como servidor del Model
+Context Protocol para que clientes LLM (Claude Desktop, Cursor, Windsurf…)
+puedan responder preguntas sobre el tiempo en España.
+
 ## Licencia
 
 MIT © [Jorge Carrera](https://github.com/jocarrd)

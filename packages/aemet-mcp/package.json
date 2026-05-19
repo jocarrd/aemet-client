@@ -1,0 +1,67 @@
+{
+  "name": "aemet-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for AEMET — Spain's national weather agency. Lets Claude, Cursor, Windsurf and other MCP clients answer questions about Spanish weather, forecasts and warnings.",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "aemet",
+    "weather",
+    "meteorology",
+    "spain",
+    "claude",
+    "llm-tools"
+  ],
+  "homepage": "https://github.com/jocarrd/aemet-client/tree/main/packages/aemet-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/jocarrd/aemet-client/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jocarrd/aemet-client.git",
+    "directory": "packages/aemet-mcp"
+  },
+  "license": "MIT",
+  "author": "Jorge Carrera <jorgecarrera98d@gmail.com>",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "bin": {
+    "aemet-mcp": "./dist/bin.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "prepublishOnly": "pnpm build && pnpm typecheck && pnpm test"
+  },
+  "engines": {
+    "node": ">=20.18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.8.0",
+    "tsup": "^8.3.5",
+    "typescript": "^6.0.3",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "aemet-client": "workspace:^",
+    "zod": "^3.25.0"
+  }
+}
