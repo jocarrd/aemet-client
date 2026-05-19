@@ -1,23 +1,9 @@
 {
-  "name": "aemet-client",
-  "version": "0.3.0",
-  "description": "Typed TypeScript client for the AEMET OpenData API (Spanish State Meteorological Agency). Used in production at snowy.es.",
-  "keywords": [
-    "aemet",
-    "opendata",
-    "weather",
-    "meteorology",
-    "spain",
-    "forecast",
-    "radar",
-    "warnings",
-    "cap",
-    "api-client"
-  ],
+  "name": "aemet-client-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo: typed AEMET OpenData client and Model Context Protocol server.",
   "homepage": "https://github.com/jocarrd/aemet-client#readme",
-  "bugs": {
-    "url": "https://github.com/jocarrd/aemet-client/issues"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jocarrd/aemet-client.git"
@@ -25,61 +11,25 @@
   "license": "MIT",
   "author": "Jorge Carrera <jorgecarrera98d@gmail.com>",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./data": {
-      "types": "./dist/data.d.ts",
-      "import": "./dist/data.js",
-      "require": "./dist/data.cjs"
-    }
-  },
-  "bin": {
-    "aemet-client": "./dist/cli.js"
-  },
-  "files": [
-    "dist",
-    "README.md",
-    "README.es.md",
-    "LICENSE"
-  ],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "build": "pnpm -r build",
+    "test": "pnpm -r --workspace-concurrency=1 test",
+    "test:e2e": "pnpm --filter aemet-client test:e2e",
+    "test:coverage": "pnpm --filter aemet-client test:coverage",
+    "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "build:data": "node scripts/build-municipalities.mjs",
-    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
+    "format:check": "prettier --check ."
   },
   "engines": {
-    "node": ">=20.18"
+    "node": ">=20.18",
+    "pnpm": ">=10"
   },
   "devDependencies": {
-    "@types/node": "^25.8.0",
-    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^10.4.0",
     "prettier": "^3.4.2",
-    "tsup": "^8.3.5",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.3",
-    "vite": "^8.0.13",
-    "vitest": "^3.2.4"
-  },
-  "dependencies": {
-    "fast-xml-parser": "^5.8.0"
+    "typescript-eslint": "^8.59.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
