@@ -6,11 +6,18 @@ import { fileURLToPath } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const out = join(here, "..", "src", "data", "municipalities.json");
 
-const query = `SELECT ?ineCode ?label ?lat ?lon WHERE {
-  ?municipio wdt:P31 wd:Q2074737.
+// Any Spanish entity that carries an INE municipal code (P772) is a municipality.
+// We deliberately do NOT filter by `wdt:P31 wd:Q2074737` because Wikidata tags
+// Catalan, Galician, Basque and several other municipalities with more specific
+// P31 values that aren't direct instances of Q2074737, which silently dropped
+// ~2000 municipalities (all of Barcelona, Girona, Lleida, Lugo, Ourense, most
+// of La Rioja, A Coruña, Asturias, Pontevedra, Tarragona…).
+const query = `SELECT DISTINCT ?ineCode ?label ?lat ?lon WHERE {
   ?municipio wdt:P772 ?ineCode.
+  ?municipio wdt:P17 wd:Q29.
   ?municipio wdt:P625 ?coord.
   ?municipio rdfs:label ?label FILTER (lang(?label) = "es").
+  FILTER REGEX(?ineCode, "^[0-9]{5}$").
   BIND (geof:longitude(?coord) AS ?lon).
   BIND (geof:latitude(?coord) AS ?lat).
 }`;
