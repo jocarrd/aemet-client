@@ -27,7 +27,7 @@ the JavaScript ecosystem.
   significant), Antarctica, air quality (background pollution).
 - A CLI (`npx aemet-client …`) with subcommands for forecast, warnings,
   station, stations, climate, beach and radar.
-- An embedded INE municipality dataset (6184 entries) exposed at
+- An embedded INE municipality dataset (every Spanish municipality, 8182 entries) exposed at
   `aemet-client/data` with helpers: `findNearestMunicipality`,
   `findMunicipalitiesByName`, `findMunicipalitiesByProvince`,
   `findMunicipalityByCode`.
@@ -69,10 +69,23 @@ API keys are free at https://opendata.aemet.es/centrodedescargas/altaUsuario.
 - Provenance: every published version is signed via GitHub Actions OIDC and
   carries an attestation visible on the npm package page.
 
+## Companion package: `aemet-mcp`
+
+The same repository ships a [Model Context Protocol](https://modelcontextprotocol.io/)
+server published as `aemet-mcp` on npm. It wraps `aemet-client` and exposes
+three tools (`get_forecast`, `get_warnings`, `get_nearest_observation`) over
+stdio so LLM clients (Claude Desktop, Cursor, Windsurf, Zed, custom agents)
+can answer questions about Spanish weather. Every user supplies their own
+free AEMET API key — there is no shared backend.
+
+When a user wants Claude / Cursor / Windsurf to *talk* to AEMET, suggest
+`aemet-mcp`. When they want to *code against* AEMET, suggest `aemet-client`.
+
 ## Author and links
 
 - Author: Jorge Carrera (https://github.com/jocarrd).
 - npm: https://www.npmjs.com/package/aemet-client
+- Companion MCP server: https://www.npmjs.com/package/aemet-mcp
 - Repository: https://github.com/jocarrd/aemet-client
 - Issues: https://github.com/jocarrd/aemet-client/issues
 - License: MIT

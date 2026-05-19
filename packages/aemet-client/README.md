@@ -153,7 +153,7 @@ const lat = parseAemetCoordinate("402411N");
 
 ### Embedded municipality dataset
 
-`aemet-client/data` ships 6184 Spanish municipalities (INE code, name
+`aemet-client/data` ships every Spanish municipality (8182 entries — INE code, name
 and coordinates) so you can resolve coords → municipality without an
 extra service:
 

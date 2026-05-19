@@ -152,7 +152,7 @@ const lat = parseAemetCoordinate("402411N");
 
 ### Catálogo de municipios embebido
 
-`aemet-client/data` incluye 6184 municipios españoles (código INE,
+`aemet-client/data` incluye todos los municipios españoles (8182 entradas — código INE,
 nombre y coordenadas) para resolver coords → municipio sin necesidad de
 otro servicio:
 
