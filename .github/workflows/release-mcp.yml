@@ -39,14 +39,14 @@ jobs:
             exit 1
           fi
 
+      - name: Build
+        run: pnpm -r build
+
       - name: Typecheck
         run: pnpm -r typecheck
 
       - name: Test
         run: pnpm --filter aemet-mcp test
-
-      - name: Build
-        run: pnpm -r build
 
       - name: Publish
         run: pnpm --filter aemet-mcp publish --access public --provenance --no-git-checks

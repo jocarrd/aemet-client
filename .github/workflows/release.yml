@@ -41,14 +41,14 @@ jobs:
             exit 1
           fi
 
+      - name: Build
+        run: pnpm --filter aemet-client build
+
       - name: Typecheck
         run: pnpm --filter aemet-client typecheck
 
       - name: Test
         run: pnpm --filter aemet-client test
-
-      - name: Build
-        run: pnpm --filter aemet-client build
 
       - name: Publish
         working-directory: packages/aemet-client

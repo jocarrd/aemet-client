@@ -58,7 +58,7 @@
     "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "build:data": "node scripts/build-municipalities.mjs",
-    "prepublishOnly": "pnpm typecheck && pnpm test && pnpm build"
+    "prepublishOnly": "pnpm build && pnpm typecheck && pnpm test"
   },
   "engines": {
     "node": ">=20.18"
