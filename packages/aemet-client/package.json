@@ -61,7 +61,7 @@
     "prepublishOnly": "pnpm build && pnpm typecheck && pnpm test"
   },
   "engines": {
-    "node": ">=20.18"
+    "node": ">=20.19"
   },
   "devDependencies": {
     "@types/node": "^25.8.0",
