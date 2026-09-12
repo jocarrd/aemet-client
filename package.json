@@ -23,7 +23,7 @@
     "format:check": "prettier --check ."
   },
   "engines": {
-    "node": ">=20.18",
+    "node": ">=20.19",
     "pnpm": ">=10"
   },
   "devDependencies": {
