@@ -42,7 +42,8 @@
     "dist",
     "README.md",
     "LICENSE",
-    "llms.txt"
+    "llms.txt",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "tsup",

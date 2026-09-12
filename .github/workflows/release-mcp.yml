@@ -39,6 +39,14 @@ jobs:
             exit 1
           fi
 
+      - name: Verify the aemet-client version it depends on is on npm
+        run: |
+          dep=$(node -p "require('./packages/aemet-client/package.json').version")
+          if ! npm view "aemet-client@$dep" version >/dev/null 2>&1; then
+            echo "::error::aemet-client@$dep is not published. pnpm rewrites the workspace dependency to ^$dep, so publishing now would ship a broken install. Tag aemet-client-v$dep first."
+            exit 1
+          fi
+
       - name: Build
         run: pnpm -r build
 
