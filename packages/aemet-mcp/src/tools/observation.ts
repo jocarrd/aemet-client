@@ -3,7 +3,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AemetClient, StationObservation } from "aemet-client";
 import { findNearest } from "aemet-client";
 import { ResolutionError, resolveMunicipality, resolveMunicipalityByCoords } from "../resolve.js";
-import { errorContent } from "./shared.js";
+import { errorContent, resolutionErrorContent } from "./shared.js";
 
 const inputSchema = {
   location: z
@@ -47,7 +47,7 @@ export function registerObservationTool(server: McpServer, client: AemetClient):
         };
       } catch (err) {
         if (err instanceof ResolutionError) {
-          return errorContent(err.message + (err.hint ? ` ${err.hint}` : ""));
+          return resolutionErrorContent(err);
         }
         throw err;
       }

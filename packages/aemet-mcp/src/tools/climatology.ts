@@ -9,7 +9,7 @@ import type {
 } from "aemet-client";
 import { findNearest, parseAemetCoordinate, parseSpanishNumber } from "aemet-client";
 import { ResolutionError, resolveMunicipality, resolveMunicipalityByCoords } from "../resolve.js";
-import { errorContent, textContent } from "./shared.js";
+import { errorContent, textContent, resolutionErrorContent } from "./shared.js";
 
 const MAX_DAILY_ROWS = 31;
 const MAX_RANGE_DAYS = 186;
@@ -108,7 +108,7 @@ export function registerClimatologyTool(server: McpServer, client: AemetClient):
         return textContent(`${header}\n${formatRange(records, from, end)}`);
       } catch (err) {
         if (err instanceof ResolutionError) {
-          return errorContent(err.message + (err.hint ? ` ${err.hint}` : ""));
+          return resolutionErrorContent(err);
         }
         throw err;
       }
@@ -327,23 +327,23 @@ function formatNormals(normals: ClimatologyNormal[]): string {
 function formatNormal(entry: ClimatologyNormal): string {
   const label = monthLabel(entry.mes);
   const parts = [label];
-  const mean = normalValue(entry, "tm_mes_md", "t_med");
-  const meanMax = normalValue(entry, "tm_max_md");
-  const meanMin = normalValue(entry, "tm_min_md");
+  const mean = normalValue(entry.tm_mes_md);
+  const meanMax = normalValue(entry.tm_max_md);
+  const meanMin = normalValue(entry.tm_min_md);
   if (mean !== undefined) parts.push(`mean ${mean.toFixed(1)}°C`);
   if (meanMax !== undefined && meanMin !== undefined) {
     parts.push(`mean max ${meanMax.toFixed(1)}°C / mean min ${meanMin.toFixed(1)}°C`);
   }
-  const absMax = normalValue(entry, "ta_max_md", "ta_max");
-  const absMin = normalValue(entry, "ta_min_md", "ta_min");
+  const absMax = normalValue(entry.ta_max_md);
+  const absMin = normalValue(entry.ta_min_md);
   if (absMax !== undefined && absMin !== undefined) {
     parts.push(`record-average extremes ${absMax.toFixed(1)} / ${absMin.toFixed(1)}°C`);
   }
-  const precip = normalValue(entry, "p_mes_md", "p_med");
+  const precip = normalValue(entry.p_mes_md);
   if (precip !== undefined) parts.push(`precip ${precip.toFixed(1)} mm`);
-  const rainDays = normalValue(entry, "n_llu_md", "d_llu");
+  const rainDays = normalValue(entry.n_llu_md);
   if (rainDays !== undefined) parts.push(`rain days ${rainDays.toFixed(1)}`);
-  const sun = normalValue(entry, "inso_md", "i_med");
+  const sun = normalValue(entry.inso_md);
   if (sun !== undefined) parts.push(`sun ${sun.toFixed(1)} h/day`);
   return parts.join("   ");
 }
@@ -354,15 +354,9 @@ function monthLabel(mes: string): string {
   return MONTH_NAMES[index - 1] ?? mes;
 }
 
-function normalValue(entry: ClimatologyNormal, ...keys: string[]): number | undefined {
-  const record = entry as unknown as Record<string, string | undefined>;
-  for (const key of keys) {
-    const raw = record[key];
-    if (raw === undefined) continue;
-    const trimmed = String(raw).trim();
-    if (!trimmed) continue;
-    const value = Number(trimmed);
-    if (Number.isFinite(value)) return value;
-  }
-  return undefined;
+function normalValue(raw: string | undefined): number | undefined {
+  const trimmed = raw?.trim();
+  if (!trimmed) return undefined;
+  const value = Number(trimmed);
+  return Number.isFinite(value) ? value : undefined;
 }
