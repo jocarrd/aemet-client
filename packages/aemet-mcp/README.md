@@ -117,6 +117,26 @@ Names resolve without accents and tolerate how people actually write them
 one beach, the server answers with the candidates and their codes. Outside the
 bathing season AEMET stops publishing and the tool says so.
 
+## Caching
+
+AEMET rate-limits its API and some responses are heavy: the station inventory
+alone is 926 entries, and the server reads it on every climate query. Responses
+are therefore cached in memory for **10 minutes** by default, per endpoint.
+
+Set `AEMET_CACHE_TTL` in the same `env` block as the API key to change it, in
+seconds, or to `0` to turn caching off:
+
+```json
+"env": {
+  "AEMET_API_KEY": "paste-your-key-here",
+  "AEMET_CACHE_TTL": "1800"
+}
+```
+
+The cache lives in the server process, so it disappears when your MCP client
+closes it. Pass your own `cache` adapter through `clientConfig` if you need
+something shared or persistent.
+
 ## Programmatic use
 
 If you're building your own MCP integration, the server is also exposed as a
