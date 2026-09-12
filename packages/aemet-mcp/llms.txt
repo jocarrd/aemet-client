@@ -75,7 +75,7 @@ API keys are free at https://opendata.aemet.es/centrodedescargas/altaUsuario.
 
 ## Runtime
 
-- Node.js >= 20.18 (the binary is invoked through `npx -y aemet-mcp` by the
+- Node.js >= 20.19 (the binary is invoked through `npx -y aemet-mcp` by the
   MCP client; no manual install needed).
 - Dual ESM/CJS build, full TypeScript declarations exported.
 - Depends on `aemet-client` (the typed AEMET SDK) and

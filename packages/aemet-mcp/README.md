@@ -8,6 +8,9 @@ LLM clients — Claude Desktop, Cursor, Windsurf, Zed, custom agents — answer
 questions about Spain's weather using real data from
 [AEMET](https://www.aemet.es), the State Meteorological Agency.
 
+> [Versión en español](README.es.md) · Servidor MCP con ocho herramientas
+> sobre los datos abiertos de AEMET. Requiere Node.js 20.19 o superior.
+
 Built on top of [`aemet-client`](https://www.npmjs.com/package/aemet-client),
 the same TypeScript SDK that powers [snowy.es](https://snowy.es).
 

@@ -41,6 +41,7 @@
   "files": [
     "dist",
     "README.md",
+    "README.es.md",
     "LICENSE",
     "llms.txt",
     "CHANGELOG.md"
