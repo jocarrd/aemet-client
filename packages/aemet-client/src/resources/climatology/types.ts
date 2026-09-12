@@ -56,25 +56,60 @@ export interface ClimatologyMonthly {
   w_rec?: string;
 }
 
-export interface ClimatologyNormal {
+export type ClimatologyNormalVariable =
+  | "e"
+  | "evap"
+  | "glo"
+  | "hr"
+  | "inso"
+  | "n_cub"
+  | "n_des"
+  | "n_fog"
+  | "n_gra"
+  | "n_llu"
+  | "n_nie"
+  | "n_nub"
+  | "n_tor"
+  | "np_001"
+  | "np_010"
+  | "np_100"
+  | "np_300"
+  | "nt_00"
+  | "nt_30"
+  | "nv_0050"
+  | "nv_0100"
+  | "nv_1000"
+  | "nw_55"
+  | "nw_91"
+  | "p_max"
+  | "p_mes"
+  | "p_sol"
+  | "q_mar"
+  | "q_max"
+  | "q_med"
+  | "q_min"
+  | "ta_max"
+  | "ta_min"
+  | "ti_max"
+  | "tm_max"
+  | "tm_mes"
+  | "tm_min"
+  | "ts_10"
+  | "ts_20"
+  | "ts_50"
+  | "ts_min"
+  | "w_med"
+  | "w_racha";
+
+export type ClimatologyNormalStat =
+  "md" | "mn" | "q1" | "q2" | "q3" | "q4" | "max" | "min" | "s" | "cv" | "n";
+
+export type ClimatologyNormalField = `${ClimatologyNormalVariable}_${ClimatologyNormalStat}`;
+
+export type ClimatologyNormal = {
   indicativo: string;
   mes: string;
-  p_med?: string;
-  p_max?: string;
-  p_min?: string;
-  t_med?: string;
-  ta_max?: string;
-  ta_min?: string;
-  d_nie?: string;
-  d_llu?: string;
-  d_gra?: string;
-  d_tor?: string;
-  d_fog?: string;
-  d_des?: string;
-  d_cub?: string;
-  h_med?: string;
-  i_med?: string;
-}
+} & Partial<Record<ClimatologyNormalField, string>>;
 
 export interface StationInventoryEntry {
   latitud: string;

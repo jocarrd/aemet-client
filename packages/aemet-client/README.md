@@ -85,7 +85,7 @@ Run `npx aemet-client --help` for the full list of subcommands.
 | `satellite`   | `productUrl`, `productImage`                                               | `/satelites/producto/{producto}`       |
 | `maps`        | `analysisUrl`, `analysisImage`, `significantMapUrl`, `significantMapImage` | `/mapasygraficos/*`                    |
 | `antarctica`  | `observations`                                                             | `/antartida/datos/...`                 |
-| `airQuality`  | `backgroundPollution`                                                      | `/red/especial/contaminacionfondo/...` |
+| `airQuality`  | `backgroundPollution`, `backgroundPollutionRaw`                            | `/red/especial/contaminacionfondo/...` |
 
 Each method returns the parsed `datos` payload after the two-step envelope is
 resolved transparently. See [docs/endpoints.md](docs/endpoints.md) for the full

@@ -84,7 +84,7 @@ Ejecuta `npx aemet-client --help` para la lista completa.
 | `satellite`   | `productUrl`, `productImage`                                               | `/satelites/producto/{producto}`       |
 | `maps`        | `analysisUrl`, `analysisImage`, `significantMapUrl`, `significantMapImage` | `/mapasygraficos/*`                    |
 | `antarctica`  | `observations`                                                             | `/antartida/datos/...`                 |
-| `airQuality`  | `backgroundPollution`                                                      | `/red/especial/contaminacionfondo/...` |
+| `airQuality`  | `backgroundPollution`, `backgroundPollutionRaw`                            | `/red/especial/contaminacionfondo/...` |
 
 Cada método resuelve internamente el sobre `datos` en dos pasos y te devuelve
 directamente el payload parseado. Consulta

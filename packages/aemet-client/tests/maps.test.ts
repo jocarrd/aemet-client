@@ -23,7 +23,7 @@ describe("MapsResource", () => {
     expect(calls[0]).toContain("/mapasygraficos/analisis");
   });
 
-  it("returns a significant map URL with date/area/day", async () => {
+  it("returns a significant map URL with date/area/period", async () => {
     const calls: string[] = [];
     const fetch: FetchLike = async (url) => {
       calls.push(String(url));
@@ -33,18 +33,21 @@ describe("MapsResource", () => {
       });
     };
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    await c.maps.significantMapUrl("2026-05-17", "esp", 1);
-    expect(calls[0]).toContain(
-      "/mapasygraficos/mapasignificativo/fechaelaboracion/2026-05-17T00:00:00UTC/area/esp/dia/1",
+    await c.maps.significantMapUrl("2026-05-17", "esp", "c");
+    expect(calls[0]).toBe(
+      "https://opendata.aemet.es/opendata/api/mapasygraficos/mapassignificativos/fecha/2026-05-17/esp/c",
     );
   });
 
-  it("rejects invalid area and day", async () => {
+  it("rejects invalid area and period", async () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
-    await expect(c.maps.significantMapUrl("2026-05-17", "!!", 1)).rejects.toBeInstanceOf(
+    await expect(c.maps.significantMapUrl("2026-05-17", "!!", "a")).rejects.toBeInstanceOf(
       AemetError,
     );
-    await expect(c.maps.significantMapUrl("2026-05-17", "esp", "abc")).rejects.toBeInstanceOf(
+    await expect(c.maps.significantMapUrl("2026-05-17", "esp", "1")).rejects.toBeInstanceOf(
+      AemetError,
+    );
+    await expect(c.maps.significantMapUrl("2026-05-17", "esp", "g")).rejects.toBeInstanceOf(
       AemetError,
     );
   });

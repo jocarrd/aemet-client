@@ -139,17 +139,17 @@ describe("CLI", () => {
         body: {
           descripcion: "exito",
           estado: 200,
-          datos: "https://opendata.aemet.es/sh/img-vc.gif",
+          datos: "https://opendata.aemet.es/sh/img-va.gif",
         },
       },
     ]);
-    const code = await run(["radar", "vc"], {
+    const code = await run(["radar", "va"], {
       stdout: cap.stdout,
       stderr: cap.stderr,
       createClient: () => client,
     });
     expect(code).toBe(0);
-    expect(cap.out().trim()).toBe("https://opendata.aemet.es/sh/img-vc.gif");
+    expect(cap.out().trim()).toBe("https://opendata.aemet.es/sh/img-va.gif");
   });
 
   it("surfaces AemetError with exit code 1", async () => {

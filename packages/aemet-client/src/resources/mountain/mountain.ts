@@ -1,35 +1,35 @@
 import { AemetError } from "../../errors.js";
 import type { RequestOptions } from "../../transport.js";
 import { Resource } from "../base.js";
-import type { MountainArea, MountainForecast, MountainPeriod } from "./types.js";
+import {
+  MOUNTAIN_AREAS,
+  type MountainArea,
+  type MountainBulletin,
+  type MountainDay,
+} from "./types.js";
 
-const AREA_RE = /^[1-8]$/;
-const PERIOD_RE = /^[01]$/;
+const AREAS = new Set<string>(Object.values(MOUNTAIN_AREAS));
+const DAY_RE = /^[0-3]$/;
 
 export class MountainResource extends Resource {
   async forecast(
     area: MountainArea,
-    period: MountainPeriod,
+    day: MountainDay,
     options: RequestOptions = {},
-  ): Promise<MountainForecast[]> {
+  ): Promise<MountainBulletin[]> {
     assertArea(area);
-    const periodStr = assertPeriod(period);
-    const { data } = await this.transport.request<MountainForecast[]>(
-      `/prediccion/especifica/montaña/${area}/periodo/${periodStr}`,
+    const dayStr = assertDay(day);
+    const { data } = await this.transport.request<MountainBulletin[]>(
+      `/prediccion/especifica/montaña/pasada/area/${area}/dia/${dayStr}`,
       options,
     );
     return data;
   }
 
-  async past(
-    area: MountainArea,
-    day: MountainPeriod,
-    options: RequestOptions = {},
-  ): Promise<MountainForecast[]> {
+  async past(area: MountainArea, options: RequestOptions = {}): Promise<MountainBulletin[]> {
     assertArea(area);
-    const dayStr = assertPeriod(day);
-    const { data } = await this.transport.request<MountainForecast[]>(
-      `/prediccion/especifica/montaña/pasada/area/${area}/dia/${dayStr}`,
+    const { data } = await this.transport.request<MountainBulletin[]>(
+      `/prediccion/especifica/montaña/pasada/area/${area}`,
       options,
     );
     return data;
@@ -37,15 +37,17 @@ export class MountainResource extends Resource {
 }
 
 function assertArea(area: string): void {
-  if (!AREA_RE.test(area)) {
-    throw new AemetError(`Invalid mountain area: ${JSON.stringify(area)}. Expected "1"-"8".`);
+  if (!AREAS.has(area)) {
+    throw new AemetError(
+      `Invalid mountain area: ${JSON.stringify(area)}. Expected one of ${[...AREAS].join(", ")}.`,
+    );
   }
 }
 
-function assertPeriod(period: MountainPeriod): string {
-  const str = String(period);
-  if (!PERIOD_RE.test(str)) {
-    throw new AemetError(`Invalid period: ${JSON.stringify(period)}. Expected 0 or 1.`);
+function assertDay(day: MountainDay): string {
+  const str = String(day);
+  if (!DAY_RE.test(str)) {
+    throw new AemetError(`Invalid day: ${JSON.stringify(day)}. Expected 0 (today) to 3.`);
   }
   return str;
 }

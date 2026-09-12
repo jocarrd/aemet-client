@@ -20,7 +20,7 @@ describe("SatelliteResource", () => {
         headers: { "content-type": "application/json" },
       });
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    const result = await c.satellite.productUrl("sat");
+    const result = await c.satellite.productUrl("nvdi");
     expect(result.url).toBe("https://opendata.aemet.es/sh/sat.jpg");
   });
 
@@ -41,14 +41,15 @@ describe("SatelliteResource", () => {
       });
     };
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    const result = await c.satellite.productImage("sat");
+    const result = await c.satellite.productImage("sst");
     expect(result.contentType).toBe("image/jpeg");
     expect(result.bytes).toEqual(imageBytes);
   });
 
-  it("rejects invalid product codes", async () => {
+  it("rejects products AEMET no longer serves", async () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
     await expect(c.satellite.productUrl("!")).rejects.toBeInstanceOf(AemetError);
-    await expect(c.satellite.productImage("x".repeat(20))).rejects.toBeInstanceOf(AemetError);
+    await expect(c.satellite.productUrl("sat")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.satellite.productImage("nubes")).rejects.toBeInstanceOf(AemetError);
   });
 });

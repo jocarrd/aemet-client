@@ -40,10 +40,10 @@ describe("RadarResource", () => {
 
   it("returns the regional radar URL", async () => {
     const fetch: FetchLike = async () =>
-      jsonResponse(envelope("https://opendata.aemet.es/sh/img-vc.gif"));
+      jsonResponse(envelope("https://opendata.aemet.es/sh/img-va.gif"));
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    const result = await c.radar.regionalUrl("vc");
-    expect(result.url).toBe("https://opendata.aemet.es/sh/img-vc.gif");
+    const result = await c.radar.regionalUrl("va");
+    expect(result.url).toBe("https://opendata.aemet.es/sh/img-va.gif");
     expect(result.metadataUrl).toBeUndefined();
   });
 
@@ -69,6 +69,7 @@ describe("RadarResource", () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
     await expect(c.radar.regionalUrl("abc")).rejects.toBeInstanceOf(AemetError);
     await expect(c.radar.regionalUrl("1")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.radar.regionalUrl("vc")).rejects.toBeInstanceOf(AemetError);
     await expect(c.radar.regionalImage("zzzz")).rejects.toBeInstanceOf(AemetError);
   });
 
@@ -77,14 +78,14 @@ describe("RadarResource", () => {
     let call = 0;
     const fetch: FetchLike = async () => {
       call += 1;
-      if (call === 1) return jsonResponse(envelope("https://opendata.aemet.es/sh/img-vc.gif"));
+      if (call === 1) return jsonResponse(envelope("https://opendata.aemet.es/sh/img-va.gif"));
       return new Response(imageBytes as BlobPart, {
         status: 200,
         headers: { "content-type": "image/gif" },
       });
     };
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    const result = await c.radar.regionalImage("vc");
+    const result = await c.radar.regionalImage("va");
     expect(result.contentType).toBe("image/gif");
     expect(result.bytes).toEqual(imageBytes);
   });

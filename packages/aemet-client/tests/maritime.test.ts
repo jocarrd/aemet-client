@@ -64,15 +64,18 @@ describe("MaritimeResource", () => {
       { status: 200, body: maritimeFixture },
     ]);
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    const result = await c.maritime.coastal("31");
+    const result = await c.maritime.coastal("41");
     expect(result).toEqual(maritimeFixture);
-    expect(calls[0]).toContain("/prediccion/maritima/costera/costa/31");
+    expect(calls[0]).toContain("/prediccion/maritima/costera/costa/41");
   });
 
   it("rejects malformed area codes", async () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
     await expect(c.maritime.highSeas("abc")).rejects.toBeInstanceOf(AemetError);
-    await expect(c.maritime.coastal("123")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.maritime.highSeas("3")).rejects.toBeInstanceOf(AemetError);
     await expect(c.maritime.highSeas("")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.maritime.coastal("123")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.maritime.coastal("31")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.maritime.coastal("48")).rejects.toBeInstanceOf(AemetError);
   });
 });

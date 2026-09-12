@@ -1,9 +1,9 @@
 import { AemetError, AemetInvalidResponseError } from "../../errors.js";
 import type { RequestOptions } from "../../transport.js";
 import { Resource } from "../base.js";
-import type { SatelliteImage, SatelliteProduct } from "./types.js";
+import { SATELLITE_PRODUCTS, type SatelliteImage, type SatelliteProduct } from "./types.js";
 
-const PRODUCT_RE = /^[a-z0-9]{2,12}$/i;
+const PRODUCTS = new Set<string>(Object.values(SATELLITE_PRODUCTS));
 
 export class SatelliteResource extends Resource {
   async productUrl(
@@ -49,9 +49,9 @@ export class SatelliteResource extends Resource {
 }
 
 function assertProduct(product: string): void {
-  if (!PRODUCT_RE.test(product)) {
+  if (!PRODUCTS.has(product)) {
     throw new AemetError(
-      `Invalid satellite product: ${JSON.stringify(product)}. Expected 2-12 alphanumeric (e.g. "sat", "nubes", "irco").`,
+      `Invalid satellite product: ${JSON.stringify(product)}. Expected one of ${[...PRODUCTS].join(", ")}.`,
     );
   }
 }

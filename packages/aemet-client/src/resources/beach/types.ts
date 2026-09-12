@@ -1,30 +1,49 @@
 export type PlayaCode = string;
 
+export interface BeachForecastOrigin {
+  productor: string;
+  web: string;
+  language: string;
+  copyright: string;
+  notaLegal: string;
+}
+
+export interface BeachMorningAfternoon {
+  value: string;
+  f1: number;
+  descripcion1: string;
+  f2: number;
+  descripcion2: string;
+}
+
+export interface BeachDailyValue {
+  value: string;
+  valor1: number;
+}
+
+export interface BeachThermalSensation extends BeachDailyValue {
+  descripcion1: string;
+}
+
 export interface BeachForecastDay {
-  fecha: string;
-  estadoCielo: { value: string; descripcion?: string };
-  viento: { value: string };
-  oleaje: { value: string };
-  tMaxima?: { valor1?: number; valor2?: number };
-  sTermica?: { valor1?: string; valor2?: string };
-  tAgua?: { valor1?: number; valor2?: number };
-  uvMax?: number;
+  fecha: number;
+  estadoCielo: BeachMorningAfternoon;
+  viento: BeachMorningAfternoon;
+  oleaje: BeachMorningAfternoon;
+  tMaxima: BeachDailyValue;
+  sTermica: BeachThermalSensation;
+  tAgua: BeachDailyValue;
+  uvMax: BeachDailyValue;
+  tmaxima?: BeachDailyValue;
+  stermica?: BeachThermalSensation;
+  tagua?: BeachDailyValue;
 }
 
 export interface BeachForecast {
+  origen: BeachForecastOrigin;
   elaborado: string;
   nombre: string;
-  localidad?: string;
-  municipio: { id: string; nombre: string };
-  subZona?: { id: string; nombre: string };
-  id: string;
-  origen: {
-    productor: string;
-    web: string;
-    enlace: string;
-    language: string;
-    copyright: string;
-    notaLegal: string;
-  };
+  localidad: number;
+  id: number;
   prediccion: { dia: BeachForecastDay[] };
 }
