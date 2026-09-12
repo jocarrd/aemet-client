@@ -30,6 +30,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Verify tag matches package.json and server.json versions
+        id: versions
         run: |
           raw="${GITHUB_REF#refs/tags/}"
           tag="${raw#aemet-mcp-v}"
@@ -43,6 +44,13 @@ jobs:
           if [ "$tag" != "$server" ] || [ "$tag" != "$serverPkg" ]; then
             echo "::error::server.json says $server / $serverPkg, tag says $tag. The MCP Registry entry would not match the published package."
             exit 1
+          fi
+          echo "version=$tag" >> "$GITHUB_OUTPUT"
+          if npm view "aemet-mcp@$tag" version >/dev/null 2>&1; then
+            echo "already-on-npm=true" >> "$GITHUB_OUTPUT"
+            echo "aemet-mcp@$tag is already published; the npm step will be skipped so the run can be retried."
+          else
+            echo "already-on-npm=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Verify the aemet-client version it depends on is on npm
@@ -63,6 +71,7 @@ jobs:
         run: pnpm --filter aemet-mcp test
 
       - name: Publish
+        if: steps.versions.outputs.already-on-npm != 'true'
         run: pnpm --filter aemet-mcp publish --access public --provenance --no-git-checks
 
       - name: Install mcp-publisher
