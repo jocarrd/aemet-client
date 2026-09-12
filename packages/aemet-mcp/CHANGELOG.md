@@ -17,8 +17,23 @@ All notable changes to `aemet-mcp` are documented here. This project follows
   and afternoon, plus maximum temperature, water temperature, thermal sensation
   and UV index. Beach names resolve without accents and tolerate the way people
   write them; ambiguous names answer with the candidates and their codes.
+- `get_mountain_forecast` tool: AEMET's bulletin for its nine mountain areas,
+  with the forecast by section, freezing levels, free-atmosphere winds and
+  temperatures at named refuges and passes, plus the last 24 hours. Areas
+  resolve by name, including the aliases people actually use.
+- `get_maritime_forecast` tool: coastal waters (8 areas) and high seas (3
+  areas), with warnings, synoptic situation, per-zone forecast and next-day
+  trend. Resolves zone names and coastal provinces, not just codes.
+- `get_air_quality` tool: background pollution from the rural EMEP/VAG/CAMP
+  reference network, by station or nearest to a location. Values AEMET flags as
+  invalid are labelled so a model does not quote them.
 - In-memory response cache, on by default with a 10-minute TTL. Set
   `AEMET_CACHE_TTL` to change it, or `0` to turn it off.
+
+The server now covers every AEMET product that answers today: eight tools over
+the twelve SDK resources. The ones left out are documented as unavailable
+upstream (significant weather maps, retired in 2020) or as images rather than
+data (radar, satellite).
 
 ### Changed
 
