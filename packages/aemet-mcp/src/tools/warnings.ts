@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AemetClient, CapDocument, CapInfo, CapSeverity } from "aemet-client";
 import { ResolutionError, resolveCapArea } from "../resolve.js";
-import { errorContent } from "./shared.js";
+import { resolutionErrorContent } from "./shared.js";
 
 const inputSchema = {
   area: z
@@ -63,7 +63,7 @@ export function registerWarningsTool(server: McpServer, client: AemetClient): vo
         };
       } catch (err) {
         if (err instanceof ResolutionError) {
-          return errorContent(err.message + (err.hint ? ` ${err.hint}` : ""));
+          return resolutionErrorContent(err);
         }
         throw err;
       }

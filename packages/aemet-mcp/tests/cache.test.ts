@@ -13,7 +13,9 @@ function countingFetch(): { fetch: typeof globalThis.fetch; calls: string[] } {
   const fetch = vi.fn(async (input: string | URL | Request) => {
     const url = typeof input === "string" ? input : input.toString();
     calls.push(url);
-    const body = url.includes("/sh/") ? JSON.stringify([{ indicativo: "3195" }]) : JSON.stringify(ENVELOPE);
+    const body = url.includes("/sh/")
+      ? JSON.stringify([{ indicativo: "3195" }])
+      : JSON.stringify(ENVELOPE);
     return new Response(body, { status: 200, headers: { "content-type": "application/json" } });
   });
   return { fetch: fetch as unknown as typeof globalThis.fetch, calls };

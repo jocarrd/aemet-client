@@ -1,10 +1,15 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type { AemetClient } from "aemet-client";
+import type {
+  AemetClient,
+  BeachForecast,
+  BeachForecastDay,
+  BeachMorningAfternoon,
+} from "aemet-client";
 import { AemetNotFoundError } from "aemet-client";
 import { ResolutionError, normalize } from "../resolve.js";
 import { BEACHES, type Beach } from "../data/beaches.js";
-import { errorContent } from "./shared.js";
+import { errorContent, resolutionErrorContent } from "./shared.js";
 
 const inputSchema = {
   location: z
@@ -42,33 +47,6 @@ const BEACH_WORDS = new Set([
 const LINK_WORDS = new Set(["de", "del", "dels", "d", "da", "do"]);
 const ARTICLES = new Set(["la", "el", "las", "los", "les", "lo", "l", "a", "o"]);
 
-interface PeriodPair {
-  descripcion1?: string;
-  descripcion2?: string;
-}
-
-interface NumericField {
-  valor1?: number;
-  descripcion1?: string;
-}
-
-interface BeachForecastDayPayload {
-  fecha?: string | number;
-  estadoCielo?: PeriodPair;
-  viento?: PeriodPair;
-  oleaje?: PeriodPair;
-  tMaxima?: NumericField;
-  tAgua?: NumericField;
-  sTermica?: NumericField;
-  uvMax?: NumericField | number;
-}
-
-interface BeachForecastPayload {
-  elaborado?: string;
-  nombre?: string;
-  prediccion?: { dia?: BeachForecastDayPayload[] };
-}
-
 export function registerBeachTool(server: McpServer, client: AemetClient): void {
   server.registerTool(
     "get_beach_forecast",
@@ -83,9 +61,7 @@ export function registerBeachTool(server: McpServer, client: AemetClient): void 
       let resolved: Beach | undefined;
       try {
         resolved = resolveBeach(query, municipality);
-        const [doc] = (await client.beach.forecast(
-          resolved.id,
-        )) as unknown as BeachForecastPayload[];
+        const [doc] = await client.beach.forecast(resolved.id);
         if (!doc) {
           return errorContent(`AEMET returned no beach forecast for ${resolved.name}.`);
         }
@@ -94,7 +70,7 @@ export function registerBeachTool(server: McpServer, client: AemetClient): void 
         };
       } catch (err) {
         if (err instanceof ResolutionError) {
-          return errorContent(err.message + (err.hint ? ` ${err.hint}` : ""));
+          return resolutionErrorContent(err);
         }
         if (err instanceof AemetNotFoundError && resolved) {
           return errorContent(
@@ -232,16 +208,16 @@ function ambiguityMessage(input: string, matches: Beach[]): string {
   return `"${input}" matches ${matches.length} AEMET beaches:\n${shown}${tail}`;
 }
 
-function formatBeach(doc: BeachForecastPayload, beach: Beach, days: number): string {
-  const header = `${beach.name} (${beach.municipality}, ${beach.province}) — beach forecast issued ${doc.elaborado ?? "n/a"}\n`;
-  const forecastDays = doc.prediccion?.dia ?? [];
+function formatBeach(doc: BeachForecast, beach: Beach, days: number): string {
+  const header = `${beach.name} (${beach.municipality}, ${beach.province}) — beach forecast issued ${doc.elaborado}\n`;
+  const forecastDays = doc.prediccion.dia;
   if (forecastDays.length === 0) {
     return `${header}  AEMET returned no daily values.`;
   }
   return header + forecastDays.slice(0, days).map(formatDay).join("\n");
 }
 
-function formatDay(day: BeachForecastDayPayload): string {
+function formatDay(day: BeachForecastDay): string {
   const lines = [`  ${formatDate(day.fecha)}`];
   const sky = pairText(day.estadoCielo);
   if (sky) lines.push(`    Sky: ${sky}`);
@@ -249,36 +225,25 @@ function formatDay(day: BeachForecastDayPayload): string {
   if (wind) lines.push(`    Wind: ${wind}`);
   const waves = pairText(day.oleaje);
   if (waves) lines.push(`    Waves: ${waves}`);
-  const maxTemp = numericValue(day.tMaxima);
-  if (maxTemp !== undefined) lines.push(`    Max temperature: ${maxTemp}°`);
-  const waterTemp = numericValue(day.tAgua);
-  if (waterTemp !== undefined) lines.push(`    Water temperature: ${waterTemp}°`);
-  const feelsLike = day.sTermica?.descripcion1?.trim();
+  lines.push(`    Max temperature: ${day.tMaxima.valor1}°`);
+  lines.push(`    Water temperature: ${day.tAgua.valor1}°`);
+  const feelsLike = day.sTermica.descripcion1.trim();
   if (feelsLike) lines.push(`    Thermal sensation: ${feelsLike}`);
-  const uv = numericValue(day.uvMax);
-  if (uv !== undefined) lines.push(`    UV max: ${uv}`);
+  lines.push(`    UV max: ${day.uvMax.valor1}`);
   return lines.join("\n");
 }
 
-function pairText(pair: PeriodPair | undefined): string | undefined {
-  const morning = pair?.descripcion1?.trim();
-  const afternoon = pair?.descripcion2?.trim();
+function pairText(pair: BeachMorningAfternoon): string | undefined {
+  const morning = pair.descripcion1.trim();
+  const afternoon = pair.descripcion2.trim();
   if (!morning && !afternoon) return undefined;
   if (!morning) return `${afternoon} (afternoon)`;
   if (!afternoon || morning === afternoon) return morning;
   return `${morning} (morning) / ${afternoon} (afternoon)`;
 }
 
-function numericValue(field: NumericField | number | undefined): number | undefined {
-  if (typeof field === "number") return field;
-  const value = field?.valor1;
-  return typeof value === "number" ? value : undefined;
-}
-
-function formatDate(value: string | number | undefined): string {
-  if (value === undefined) return "n/a";
+function formatDate(value: number): string {
   const raw = String(value);
   const compact = raw.match(/^(\d{4})(\d{2})(\d{2})$/);
-  if (compact) return `${compact[1]}-${compact[2]}-${compact[3]}`;
-  return raw.slice(0, 10);
+  return compact ? `${compact[1]}-${compact[2]}-${compact[3]}` : raw;
 }

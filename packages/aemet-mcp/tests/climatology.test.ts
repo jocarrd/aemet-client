@@ -167,7 +167,7 @@ describe("registerClimatologyTool", () => {
   });
 
   it("returns monthly normals, labelling month 13 as the annual row", async () => {
-    const normals = [
+    const normals: ClimatologyNormal[] = [
       {
         indicativo: "9170",
         mes: "01",
@@ -179,7 +179,7 @@ describe("registerClimatologyTool", () => {
         inso_md: "3.5",
       },
       { indicativo: "9170", mes: "13", tm_mes_md: "14.1", p_mes_md: "405.3" },
-    ] as unknown as ClimatologyNormal[];
+    ];
     const res = await callTool(stubClient({ normals: () => normals }), {
       location: "Logroño",
       mode: "normals",

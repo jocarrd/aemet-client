@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AemetClient, MunicipalDailyForecast, MunicipalHourlyForecast } from "aemet-client";
 import { ResolutionError, resolveMunicipality } from "../resolve.js";
-import { errorContent } from "./shared.js";
+import { errorContent, resolutionErrorContent } from "./shared.js";
 
 const inputSchema = {
   location: z
@@ -61,7 +61,7 @@ export function registerForecastTool(server: McpServer, client: AemetClient): vo
         };
       } catch (err) {
         if (err instanceof ResolutionError) {
-          return errorContent(err.message + (err.hint ? ` ${err.hint}` : ""));
+          return resolutionErrorContent(err);
         }
         throw err;
       }
