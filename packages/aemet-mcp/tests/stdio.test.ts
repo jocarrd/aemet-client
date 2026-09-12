@@ -122,6 +122,7 @@ describe("aemet-mcp binary (stdio)", () => {
       "get_beach_forecast",
       "get_climate_history",
       "get_forecast",
+      "get_mountain_forecast",
       "get_nearest_observation",
       "get_warnings",
     ]);
