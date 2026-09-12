@@ -1,5 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { AemetClient, type AemetClientConfig } from "aemet-client";
+import { AemetClient, type AemetClientConfig, MemoryCacheAdapter } from "aemet-client";
 import { registerForecastTool } from "./tools/forecast.js";
 import { registerWarningsTool } from "./tools/warnings.js";
 import { registerObservationTool } from "./tools/observation.js";
@@ -13,6 +13,7 @@ export interface CreateServerOptions {
   apiKey?: string;
   client?: AemetClient;
   clientConfig?: Omit<AemetClientConfig, "apiKey">;
+  cacheTtlSeconds?: number;
 }
 
 export function createServer(options: CreateServerOptions = {}): {
@@ -35,6 +36,9 @@ export function createServer(options: CreateServerOptions = {}): {
   return { server, client };
 }
 
+export const DEFAULT_CACHE_TTL_SECONDS = 600;
+const MAX_CACHE_ENTRIES = 500;
+
 function buildClient(options: CreateServerOptions): AemetClient {
   const apiKey = options.apiKey ?? process.env.AEMET_API_KEY;
   if (!apiKey) {
@@ -42,9 +46,22 @@ function buildClient(options: CreateServerOptions): AemetClient {
       "AEMET_API_KEY is required. Set it in the MCP client's `env` block or pass apiKey to createServer().",
     );
   }
+  const clientConfig = options.clientConfig ?? {};
+  const ttl = options.cacheTtlSeconds ?? cacheTtlFromEnv();
   return new AemetClient({
     apiKey,
     userAgent: `${SERVER_NAME}/${SERVER_VERSION}`,
-    ...(options.clientConfig ?? {}),
+    ...(ttl > 0 && clientConfig.cache === undefined
+      ? { cache: { adapter: new MemoryCacheAdapter({ maxEntries: MAX_CACHE_ENTRIES }), ttl } }
+      : {}),
+    ...clientConfig,
   });
+}
+
+function cacheTtlFromEnv(): number {
+  const raw = process.env.AEMET_CACHE_TTL;
+  if (raw === undefined || raw.trim() === "") return DEFAULT_CACHE_TTL_SECONDS;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 0) return DEFAULT_CACHE_TTL_SECONDS;
+  return parsed;
 }
