@@ -5,6 +5,7 @@ import { registerWarningsTool } from "./tools/warnings.js";
 import { registerObservationTool } from "./tools/observation.js";
 import { registerClimatologyTool } from "./tools/climatology.js";
 import { registerBeachTool } from "./tools/beach.js";
+import { registerMountainTool } from "./tools/mountain.js";
 
 export const SERVER_NAME = "aemet-mcp";
 export const SERVER_VERSION = "0.2.0";
@@ -32,6 +33,7 @@ export function createServer(options: CreateServerOptions = {}): {
   registerObservationTool(server, client);
   registerClimatologyTool(server, client);
   registerBeachTool(server, client);
+  registerMountainTool(server, client);
 
   return { server, client };
 }
