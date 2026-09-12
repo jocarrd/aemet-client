@@ -117,6 +117,48 @@ Names resolve without accents and tolerate how people actually write them
 one beach, the server answers with the candidates and their codes. Outside the
 bathing season AEMET stops publishing and the tool says so.
 
+### `get_mountain_forecast`
+
+AEMET's mountain bulletin for the nine areas it covers: the forecast by
+section, freezing-level altitudes, free-atmosphere winds, and temperatures at
+named refuges and passes with their altitude. Also serves the last 24 hours.
+
+| Argument | Type                     | Notes                                                                                                                                                                                                                                                                            |
+| -------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `area`   | string                   | Area name or code: Picos de Europa (`peu1`), Pirineo Navarro (`nav1`), Pirineo Aragonés (`arn1`), Pirineo Catalán (`cat1`), Ibérica Riojana (`rio1`), Ibérica Aragonesa (`arn2`), Sierras de Guadarrama y Somosierra (`mad2`), Sierra de Gredos (`gre1`), Sierra Nevada (`nev1`) |
+| `mode`   | `"forecast"` \| `"past"` | Forecast (default) or the last 24 hours                                                                                                                                                                                                                                          |
+| `day`    | integer 0-3              | Days ahead for the forecast, 0 (today) by default                                                                                                                                                                                                                                |
+
+Common aliases work: `"Guadarrama"`, `"Moncayo"`, `"Urbión"`, `"Peñibética"`,
+`"Val d'Aran"`, `"Gredos"`.
+
+### `get_maritime_forecast`
+
+AEMET's marine bulletins: coastal waters (8 areas) and high seas (3 areas),
+with warnings, the synoptic situation, the forecast per zone and the trend for
+the following day.
+
+| Argument  | Type                         | Notes                                                                                                                                          |
+| --------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `area`    | string                       | Zone, coastal province or region (`"Gipuzkoa"`, `"Girona"`, `"Mar Menor"`, `"Gran Sol"`, `"Alborán"`), or a code: 40-47 coastal, 0-2 high seas |
+| `product` | `"coastal"` \| `"high_seas"` | Force one of the two products when a name exists in both                                                                                       |
+
+AEMET writes wind, sea state and visibility as a single text per zone, so the
+tool passes that text through rather than splitting it with guesswork.
+
+### `get_air_quality`
+
+Background pollution from AEMET's rural EMEP/VAG/CAMP reference network:
+regional background air, **not** urban air quality.
+
+| Argument   | Type              | Notes                                                                                        |
+| ---------- | ----------------- | -------------------------------------------------------------------------------------------- |
+| `station`  | string (optional) | Station name or 2-digit code (`"Campisábalos"`, `"Doñana"`, `"09"`)                          |
+| `location` | string (optional) | Municipality, INE code or coordinates; resolves the nearest station and reports the distance |
+
+Measurements carry AEMET's validation codes, and values flagged as invalid are
+labelled so a model does not quote them as real readings.
+
 ## Caching
 
 AEMET rate-limits its API and some responses are heavy: the station inventory

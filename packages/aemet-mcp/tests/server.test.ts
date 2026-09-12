@@ -46,9 +46,11 @@ describe("createServer", () => {
     const list = await mcp.listTools();
     const names = list.tools.map((t) => t.name).sort();
     expect(names).toEqual([
+      "get_air_quality",
       "get_beach_forecast",
       "get_climate_history",
       "get_forecast",
+      "get_maritime_forecast",
       "get_mountain_forecast",
       "get_nearest_observation",
       "get_warnings",
