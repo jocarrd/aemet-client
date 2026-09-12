@@ -98,7 +98,7 @@ describe("aemet-mcp binary (stdio)", () => {
     harness = undefined;
   });
 
-  it("completes the MCP handshake and lists the three tools", async () => {
+  it("completes the MCP handshake and lists every tool", async () => {
     harness = launch({ AEMET_API_KEY: "dummy-key-for-test" });
     const init = await harness.request("initialize", {
       protocolVersion: "2024-11-05",
@@ -115,7 +115,13 @@ describe("aemet-mcp binary (stdio)", () => {
     expect(list.error).toBeUndefined();
     const tools = (list.result as { tools: Array<{ name: string }> }).tools;
     const names = tools.map((t) => t.name).sort();
-    expect(names).toEqual(["get_forecast", "get_nearest_observation", "get_warnings"]);
+    expect(names).toEqual([
+      "get_beach_forecast",
+      "get_climate_history",
+      "get_forecast",
+      "get_nearest_observation",
+      "get_warnings",
+    ]);
   });
 
   it("rejects --help with usage on stdout, not the MCP stream", async () => {

@@ -41,7 +41,13 @@ describe("createServer", () => {
     const mcp = await connect(stubClient({}));
     const list = await mcp.listTools();
     const names = list.tools.map((t) => t.name).sort();
-    expect(names).toEqual(["get_forecast", "get_nearest_observation", "get_warnings"]);
+    expect(names).toEqual([
+      "get_beach_forecast",
+      "get_climate_history",
+      "get_forecast",
+      "get_nearest_observation",
+      "get_warnings",
+    ]);
     for (const tool of list.tools) {
       expect(tool.description).toBeTruthy();
       expect(tool.inputSchema).toBeDefined();
