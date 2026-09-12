@@ -29,13 +29,19 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Verify tag matches package.json version
+      - name: Verify tag matches package.json and server.json versions
         run: |
           raw="${GITHUB_REF#refs/tags/}"
           tag="${raw#aemet-mcp-v}"
           pkg=$(node -p "require('./packages/aemet-mcp/package.json').version")
           if [ "$tag" != "$pkg" ]; then
             echo "::error::Tag $raw does not match aemet-mcp package version $pkg"
+            exit 1
+          fi
+          server=$(node -p "require('./packages/aemet-mcp/server.json').version")
+          serverPkg=$(node -p "require('./packages/aemet-mcp/server.json').packages[0].version")
+          if [ "$tag" != "$server" ] || [ "$tag" != "$serverPkg" ]; then
+            echo "::error::server.json says $server / $serverPkg, tag says $tag. The MCP Registry entry would not match the published package."
             exit 1
           fi
 
@@ -58,3 +64,13 @@ jobs:
 
       - name: Publish
         run: pnpm --filter aemet-mcp publish --access public --provenance --no-git-checks
+
+      - name: Install mcp-publisher
+        run: |
+          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_$(uname -s | tr '[:upper:]' '[:lower:]')_$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/').tar.gz" | tar xz mcp-publisher
+
+      - name: Publish to the MCP Registry
+        working-directory: packages/aemet-mcp
+        run: |
+          ../../mcp-publisher login github-oidc
+          ../../mcp-publisher publish
