@@ -64,25 +64,37 @@ export {
   type ClimatologyDaily,
   type ClimatologyMonthly,
   type ClimatologyNormal,
+  type ClimatologyNormalField,
+  type ClimatologyNormalStat,
+  type ClimatologyNormalVariable,
   type StationInventoryEntry,
 } from "./resources/climatology/index.js";
 export {
   BeachResource,
+  BeachForecastUnavailableError,
   type BeachForecast,
   type BeachForecastDay,
+  type BeachForecastOrigin,
+  type BeachMorningAfternoon,
+  type BeachDailyValue,
+  type BeachThermalSensation,
   type PlayaCode,
 } from "./resources/beach/index.js";
 export {
   MountainResource,
   MOUNTAIN_AREAS,
   type MountainArea,
-  type MountainPeriod,
-  type MountainForecast,
-  type MountainForecastDay,
-  type MountainForecastEntry,
+  type MountainDay,
+  type MountainBulletin,
+  type MountainBulletinSection,
+  type MountainBulletinItem,
+  type MountainBulletinParagraph,
+  type MountainOrigin,
 } from "./resources/mountain/index.js";
 export {
   MaritimeResource,
+  HIGH_SEAS_AREAS,
+  COASTAL_AREAS,
   type HighSeasArea,
   type CoastalArea,
   type MaritimeForecast,
@@ -103,7 +115,9 @@ export {
 export {
   MapsResource,
   SIGNIFICANT_MAP_AREAS,
+  SIGNIFICANT_MAP_PERIODS,
   type SignificantMapArea,
+  type SignificantMapPeriod,
   type MapImage,
 } from "./resources/maps/index.js";
 export {
@@ -114,8 +128,9 @@ export {
 } from "./resources/antarctica/index.js";
 export {
   AirQualityResource,
-  POLLUTION_NETWORKS,
-  type PollutionNetwork,
+  POLLUTION_STATIONS,
+  type PollutionStation,
+  type PollutionReading,
   type PollutionMeasurement,
 } from "./resources/airQuality/index.js";
 export { toAemetDate, parseSpanishNumber, type AemetDateInput } from "./utils/date.js";

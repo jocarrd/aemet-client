@@ -55,9 +55,9 @@ describe("Transport edge cases", () => {
       );
     };
     const t = new Transport({ apiKey: "k", fetch, maxRetries: 0, retryBaseDelayMs: 1 });
-    await t.requestEnvelope("/prediccion/especifica/montaña/5/periodo/0");
+    await t.requestEnvelope("/prediccion/especifica/montaña/pasada/area/peu1/dia/0");
     expect(calls[0]).toBe(
-      "https://opendata.aemet.es/opendata/api/prediccion/especifica/montaña/5/periodo/0",
+      "https://opendata.aemet.es/opendata/api/prediccion/especifica/montaña/pasada/area/peu1/dia/0",
     );
     expect(new URL(calls[0] ?? "").pathname).toContain("/monta%C3%B1a/");
   });
@@ -326,7 +326,7 @@ describe("AemetClient config edge cases", () => {
 });
 
 describe("Climatology boundary cases", () => {
-  it("accepts a range of exactly 5 years", async () => {
+  it("accepts a range of exactly 186 days", async () => {
     const fetch: FetchLike = async (url) =>
       String(url).includes("/diarios/")
         ? new Response(
@@ -338,12 +338,12 @@ describe("Climatology boundary cases", () => {
           )
         : new Response("[]", { status: 200, headers: { "content-type": "application/json" } });
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
-    await expect(c.climatology.daily("3195", "2021-01-01", "2025-12-30")).resolves.toBeDefined();
+    await expect(c.climatology.daily("3195", "2024-01-01", "2024-07-05")).resolves.toBeDefined();
   });
 
-  it("rejects a range just over 5 years", async () => {
+  it("rejects a range just over 186 days", async () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
-    await expect(c.climatology.daily("3195", "2021-01-01", "2026-12-31")).rejects.toBeInstanceOf(
+    await expect(c.climatology.daily("3195", "2024-01-01", "2024-07-06")).rejects.toBeInstanceOf(
       AemetError,
     );
   });

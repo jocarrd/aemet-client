@@ -1,55 +1,48 @@
 export const MOUNTAIN_AREAS = {
-  picosDeEuropa: "1",
-  pirineoNavarro: "2",
-  pirineoAragones: "3",
-  pirineoCatalan: "4",
-  sierraMadrid: "5",
-  iberica: "6",
-  sierraNevada: "7",
-  bejarGredos: "8",
+  picosDeEuropa: "peu1",
+  pirineoNavarro: "nav1",
+  pirineoAragones: "arn1",
+  pirineoCatalan: "cat1",
+  ibericaRiojana: "rio1",
+  ibericaAragonesa: "arn2",
+  guadarramaSomosierra: "mad2",
+  sierraGredos: "gre1",
+  sierraNevada: "nev1",
 } as const;
 
 export type MountainArea = (typeof MOUNTAIN_AREAS)[keyof typeof MOUNTAIN_AREAS] | (string & {});
-export type MountainPeriod = 0 | 1 | "0" | "1";
+export type MountainDay = 0 | 1 | 2 | 3 | "0" | "1" | "2" | "3";
 
-export interface MountainForecastEntry {
-  periodo?: string;
-  value?: string;
-  descripcion?: string;
-  altitud?: string;
-  direccion?: string;
-  velocidad?: string;
+export interface MountainOrigin {
+  productor: string;
+  web: string;
+  tipo: string;
+  language: string;
+  copyright: string;
+  notaLegal: string;
 }
 
-export interface MountainForecastDay {
-  fecha: string;
-  estadoCielo: MountainForecastEntry[];
-  precipitacion: MountainForecastEntry[];
-  cotaNieveProv?: MountainForecastEntry[];
-  cotaNieve?: MountainForecastEntry[];
-  isoCero?: MountainForecastEntry[];
-  isoMenosUno?: MountainForecastEntry[];
-  isoMenosDiez?: MountainForecastEntry[];
-  vientoSuperficie?: MountainForecastEntry[];
-  viento3000m?: MountainForecastEntry[];
-  viento2500m?: MountainForecastEntry[];
-  viento1500m?: MountainForecastEntry[];
-  viento1000m?: MountainForecastEntry[];
-  viento500m?: MountainForecastEntry[];
-  temperatura?: MountainForecastEntry[];
+export interface MountainBulletinItem {
+  cabecera?: string;
+  texto: string;
+  nombre?: string;
 }
 
-export interface MountainForecast {
+export interface MountainBulletinParagraph {
+  texto: string;
+  numero: string;
+}
+
+export interface MountainBulletinSection {
   nombre: string;
+  apartado: MountainBulletinItem[];
+  parrafo: MountainBulletinParagraph[];
+  lugar: Array<Record<string, unknown>>;
+}
+
+export interface MountainBulletin {
   id: string;
-  elaborado: string;
-  origen: {
-    productor: string;
-    web: string;
-    enlace: string;
-    language: string;
-    copyright: string;
-    notaLegal: string;
-  };
-  prediccion: { dia: MountainForecastDay[] };
+  nombre: string;
+  origen: MountainOrigin;
+  seccion: MountainBulletinSection[];
 }

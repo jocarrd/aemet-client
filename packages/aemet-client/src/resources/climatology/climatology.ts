@@ -11,7 +11,8 @@ import type {
 
 const IDEMA_RE = /^[A-Z0-9]{3,6}$/i;
 const YEAR_RE = /^\d{4}$/;
-const MAX_DAILY_RANGE_DAYS = 5 * 365;
+const MAX_DAILY_RANGE_DAYS = 186;
+const MAX_MONTHLY_RANGE_YEARS = 3;
 
 export class ClimatologyResource extends Resource {
   async daily(
@@ -42,6 +43,12 @@ export class ClimatologyResource extends Resource {
     const toY = assertYear(toYear, "toYear");
     if (toY < fromY) {
       throw new AemetError(`toYear (${toY}) must be >= fromYear (${fromY}).`);
+    }
+    if (toY - fromY > MAX_MONTHLY_RANGE_YEARS) {
+      throw new AemetError(
+        `Year range ${fromY}-${toY} exceeds AEMET's limit of 36 months for monthly/annual values. ` +
+          `Request it in chunks of at most ${MAX_MONTHLY_RANGE_YEARS + 1} calendar years (toYear - fromYear <= ${MAX_MONTHLY_RANGE_YEARS}).`,
+      );
     }
     const { data } = await this.transport.request<ClimatologyMonthly[]>(
       `/valores/climatologicos/mensualesanuales/datos/anioini/${fromY}/aniofin/${toY}/estacion/${idema}`,
@@ -93,7 +100,9 @@ function assertRange(from: string, to: string): void {
   const days = (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24);
   if (days > MAX_DAILY_RANGE_DAYS) {
     throw new AemetError(
-      `Date range exceeds AEMET's limit of 5 years for daily climatological data.`,
+      `Date range ${from} to ${to} spans ${Math.round(days)} days and exceeds AEMET's limit of ` +
+        `6 months (${MAX_DAILY_RANGE_DAYS} days) for daily values. ` +
+        `Request it in chunks of at most ${MAX_DAILY_RANGE_DAYS} days.`,
     );
   }
 }

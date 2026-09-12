@@ -1,13 +1,20 @@
 import { AemetError } from "../../errors.js";
 import type { RequestOptions } from "../../transport.js";
 import { Resource } from "../base.js";
-import type { CoastalArea, HighSeasArea, MaritimeForecast } from "./types.js";
+import {
+  COASTAL_AREAS,
+  HIGH_SEAS_AREAS,
+  type CoastalArea,
+  type HighSeasArea,
+  type MaritimeForecast,
+} from "./types.js";
 
-const AREA_RE = /^\d{1,2}$/;
+const HIGH_SEAS = new Set<string>(Object.values(HIGH_SEAS_AREAS));
+const COASTAL = new Set<string>(Object.values(COASTAL_AREAS));
 
 export class MaritimeResource extends Resource {
   async highSeas(area: HighSeasArea, options: RequestOptions = {}): Promise<MaritimeForecast> {
-    assertArea(area, "highSeas");
+    assertArea(area, HIGH_SEAS, "high seas area");
     const { data } = await this.transport.request<MaritimeForecast>(
       `/prediccion/maritima/altamar/area/${area}`,
       options,
@@ -16,7 +23,7 @@ export class MaritimeResource extends Resource {
   }
 
   async coastal(coast: CoastalArea, options: RequestOptions = {}): Promise<MaritimeForecast> {
-    assertArea(coast, "coastal");
+    assertArea(coast, COASTAL, "coastal area");
     const { data } = await this.transport.request<MaritimeForecast>(
       `/prediccion/maritima/costera/costa/${coast}`,
       options,
@@ -25,10 +32,10 @@ export class MaritimeResource extends Resource {
   }
 }
 
-function assertArea(area: string, label: string): void {
-  if (!AREA_RE.test(area)) {
+function assertArea(area: string, allowed: Set<string>, label: string): void {
+  if (!allowed.has(area)) {
     throw new AemetError(
-      `Invalid ${label} area: ${JSON.stringify(area)}. Expected a 1-2 digit code.`,
+      `Invalid ${label}: ${JSON.stringify(area)}. Expected one of ${[...allowed].join(", ")}.`,
     );
   }
 }

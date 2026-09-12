@@ -251,11 +251,12 @@ async function beach(
     stdout.write("No beach forecast data.\n");
     return 0;
   }
-  stdout.write(`${first.nombre} (${first.municipio.nombre})\n`);
+  stdout.write(`${first.nombre} (${first.id})\n`);
   for (const day of first.prediccion.dia) {
-    const water = day.tAgua ? `water ${day.tAgua.valor1 ?? "—"}-${day.tAgua.valor2 ?? "—"}°` : "";
-    const air = day.tMaxima ? `air ${day.tMaxima.valor1 ?? "—"}-${day.tMaxima.valor2 ?? "—"}°` : "";
-    stdout.write(`  ${day.fecha}  ${air}  ${water}  ${day.oleaje.value}\n`);
+    const air = `air ${day.tMaxima.valor1}°`;
+    const water = `water ${day.tAgua.valor1}°`;
+    const waves = `waves ${day.oleaje.descripcion1} / ${day.oleaje.descripcion2}`;
+    stdout.write(`  ${day.fecha}  ${air}  ${water}  ${waves}  uv ${day.uvMax.valor1}\n`);
   }
   return 0;
 }

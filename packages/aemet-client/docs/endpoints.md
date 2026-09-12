@@ -72,6 +72,109 @@ warning colours:
 The colour is also available inside `info.parameters[]` under
 `AEMET-Meteoalerta nivel`.
 
+## Mountain — `client.mountain`
+
+AEMET serves both mountain bulletins under the `pasada` path segment; the
+forecast is the variant that carries a `/dia/{day}` suffix. There is no
+`/prediccion/especifica/montaña/{area}/periodo/{p}` endpoint.
+
+### `forecast(area, day)`
+
+- **Endpoint:** `GET /prediccion/especifica/montaña/pasada/area/{area}/dia/{day}`
+- **Arguments:** an area code from `MOUNTAIN_AREAS` (`peu1`, `nav1`, `arn1`,
+  `cat1`, `rio1`, `arn2`, `mad2`, `gre1`, `nev1`) and a day `0` (today) to `3`.
+- **Returns:** `MountainBulletin[]` — the forecast text lives in
+  `seccion[].apartado[]`, one entry per heading (sky state, precipitation,
+  storms, temperature, wind).
+
+### `past(area)`
+
+- **Endpoint:** `GET /prediccion/especifica/montaña/pasada/area/{area}`
+- **Returns:** `MountainBulletin[]` — a summary of the last 24-36 hours, with
+  the text in `seccion[].parrafo[]` instead of `apartado[]`.
+
+## Maritime — `client.maritime`
+
+### `highSeas(area)`
+
+- **Endpoint:** `GET /prediccion/maritima/altamar/area/{area}`
+- **Argument:** `HIGH_SEAS_AREAS` — `0` (Atlantic south of 35N), `1` (Atlantic
+  north of 30N), `2` (Mediterranean). AEMET rejects any other value.
+
+### `coastal(coast)`
+
+- **Endpoint:** `GET /prediccion/maritima/costera/costa/{coast}`
+- **Argument:** `COASTAL_AREAS` — `40` to `47`. AEMET rejects any other value.
+
+## Radar — `client.radar`
+
+### `nationalUrl()` / `nationalImage()`
+
+- **Endpoint:** `GET /red/radar/nacional`
+- The endpoint exists, but AEMET has been answering it with an envelope of
+  `{"descripcion": "Error al obtener los datos", "estado": 404}`, which the
+  client surfaces as `AemetNotFoundError`. The failure is upstream; the
+  regional composites are unaffected.
+
+### `regionalUrl(code)` / `regionalImage(code)`
+
+- **Endpoint:** `GET /red/radar/regional/{code}`
+- **Argument:** a code from `REGIONAL_RADARS`: `am` Almería, `sa` Asturias,
+  `pm` Illes Balears, `ba` Barcelona, `cc` Cáceres, `co` A Coruña, `ma` Madrid,
+  `ml` Málaga, `mu` Murcia, `vd` Palencia, `ca` Las Palmas, `se` Sevilla,
+  `va` Valencia, `ss` Vizcaya, `za` Zaragoza.
+
+## Satellite — `client.satellite`
+
+### `productUrl(product)` / `productImage(product)`
+
+- **Endpoint:** `GET /satelites/producto/{product}`
+- **Argument:** `SATELLITE_PRODUCTS` — only `nvdi` (normalised vegetation
+  index, refreshed on Thursdays) and `sst` (sea surface temperature, refreshed
+  daily). The path is not a generic parameter: any other product name is a
+  route AEMET does not serve.
+
+## Maps — `client.maps`
+
+### `analysisUrl()` / `analysisImage()`
+
+- **Endpoint:** `GET /mapasygraficos/analisis`
+- Surface pressure analysis chart, updated every 12 hours (00, 12).
+
+### `significantMapUrl(date, area, period)` / `significantMapImage(...)`
+
+- **Endpoint:** `GET /mapasygraficos/mapassignificativos/fecha/{YYYY-MM-DD}/{area}/{period}`
+- **Arguments:** a date, an area from `SIGNIFICANT_MAP_AREAS` (`esp` plus the
+  17 autonomous community codes) and a period from `SIGNIFICANT_MAP_PERIODS`
+  (`a` D+0 00-12, `b` D+0 12-24, `c` D+1 00-12, `d` D+1 12-24, `e` D+2 00-12,
+  `f` D+2 12-24).
+- AEMET stopped producing this product on 22/01/2020 and its archive no longer
+  answers: every date tried, in and out of range, returns `{"descripcion": "No
+hay datos que satisfagan esos criterios", "estado": 404}`. The route is kept
+  because it is the one the official specification documents.
+
+## Antarctica — `client.antarctica`
+
+### `observations(station, from, to)`
+
+- **Endpoint:** `GET /antartida/datos/fechaini/{from}/fechafin/{to}/estacion/{station}`
+- **Argument:** `ANTARCTICA_STATIONS` — `89064` (Juan Carlos I) and `89070`
+  (Gabriel de Castilla), plus the `R`/`RA` radiometric suffixes.
+- Data is campaign-based (austral summer), so ranges outside a campaign return
+  no data.
+
+## Air quality — `client.airQuality`
+
+### `backgroundPollution(station)` / `backgroundPollutionRaw(station)`
+
+- **Endpoint:** `GET /red/especial/contaminacionfondo/estacion/{station}`
+- **Argument:** a two-digit EMEP station code from `POLLUTION_STATIONS`. The
+  endpoint takes no network segment.
+- The `datos` payload is a plain-text FINN file in ISO-8859-15, not JSON: one
+  line per ten-minute slot, each carrying `NAME(code): value unit CV: v FC: f`
+  groups. `backgroundPollution` parses it into `PollutionMeasurement[]`;
+  `backgroundPollutionRaw` returns the text untouched.
+
 ## Notes on the envelope
 
 Every AEMET endpoint returns a two-step envelope:

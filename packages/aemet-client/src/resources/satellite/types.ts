@@ -1,13 +1,6 @@
 export const SATELLITE_PRODUCTS = {
-  ircos: "ircos",
-  irco: "irco",
-  irir: "irir",
-  irir1: "irir1",
-  irmi: "irmi",
-  iruv: "iruv",
-  iruv1: "iruv1",
-  nubes: "nubes",
-  sat: "sat",
+  nvdi: "nvdi",
+  sst: "sst",
 } as const;
 
 export type SatelliteProduct =

@@ -2,8 +2,10 @@ export { MountainResource } from "./mountain.js";
 export {
   MOUNTAIN_AREAS,
   type MountainArea,
-  type MountainPeriod,
-  type MountainForecast,
-  type MountainForecastDay,
-  type MountainForecastEntry,
+  type MountainDay,
+  type MountainBulletin,
+  type MountainBulletinSection,
+  type MountainBulletinItem,
+  type MountainBulletinParagraph,
+  type MountainOrigin,
 } from "./types.js";

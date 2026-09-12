@@ -2,10 +2,16 @@ import { AemetError, AemetInvalidResponseError } from "../../errors.js";
 import type { RequestOptions } from "../../transport.js";
 import { toAemetDate, type AemetDateInput } from "../../utils/date.js";
 import { Resource } from "../base.js";
-import type { MapImage, SignificantMapArea } from "./types.js";
+import {
+  SIGNIFICANT_MAP_AREAS,
+  SIGNIFICANT_MAP_PERIODS,
+  type MapImage,
+  type SignificantMapArea,
+  type SignificantMapPeriod,
+} from "./types.js";
 
-const AREA_RE = /^[a-z]{1,4}$/i;
-const DAY_RE = /^\d{1,2}$/;
+const AREAS = new Set<string>(Object.values(SIGNIFICANT_MAP_AREAS));
+const PERIODS = new Set<string>(Object.values(SIGNIFICANT_MAP_PERIODS));
 
 export class MapsResource extends Resource {
   async analysisUrl(options: RequestOptions = {}): Promise<{ url: string; metadataUrl?: string }> {
@@ -17,33 +23,21 @@ export class MapsResource extends Resource {
   }
 
   async significantMapUrl(
-    fechaElaboracion: AemetDateInput,
+    date: AemetDateInput,
     area: SignificantMapArea,
-    day: number | string,
+    period: SignificantMapPeriod,
     options: RequestOptions = {},
   ): Promise<{ url: string; metadataUrl?: string }> {
-    const fechaStr = toAemetDate(fechaElaboracion);
-    assertArea(area);
-    const dayStr = assertDay(day);
-    return this.#fetchUrl(
-      `/mapasygraficos/mapasignificativo/fechaelaboracion/${fechaStr}/area/${area}/dia/${dayStr}`,
-      options,
-    );
+    return this.#fetchUrl(significantMapEndpoint(date, area, period), options);
   }
 
   async significantMapImage(
-    fechaElaboracion: AemetDateInput,
+    date: AemetDateInput,
     area: SignificantMapArea,
-    day: number | string,
+    period: SignificantMapPeriod,
     options: RequestOptions = {},
   ): Promise<MapImage> {
-    const fechaStr = toAemetDate(fechaElaboracion);
-    assertArea(area);
-    const dayStr = assertDay(day);
-    return this.#fetchImage(
-      `/mapasygraficos/mapasignificativo/fechaelaboracion/${fechaStr}/area/${area}/dia/${dayStr}`,
-      options,
-    );
+    return this.#fetchImage(significantMapEndpoint(date, area, period), options);
   }
 
   async #fetchUrl(
@@ -81,18 +75,29 @@ export class MapsResource extends Resource {
   }
 }
 
+function significantMapEndpoint(
+  date: AemetDateInput,
+  area: SignificantMapArea,
+  period: SignificantMapPeriod,
+): string {
+  const day = toAemetDate(date).slice(0, 10);
+  assertArea(area);
+  assertPeriod(period);
+  return `/mapasygraficos/mapassignificativos/fecha/${day}/${area}/${period}`;
+}
+
 function assertArea(area: string): void {
-  if (!AREA_RE.test(area)) {
+  if (!AREAS.has(area)) {
     throw new AemetError(
-      `Invalid map area: ${JSON.stringify(area)}. Expected a short code (e.g. "esp", "a", "b").`,
+      `Invalid map area: ${JSON.stringify(area)}. Expected one of ${[...AREAS].join(", ")}.`,
     );
   }
 }
 
-function assertDay(day: number | string): string {
-  const str = String(day);
-  if (!DAY_RE.test(str)) {
-    throw new AemetError(`Invalid day: ${JSON.stringify(day)}. Expected 1-2 digits (0-3 typical).`);
+function assertPeriod(period: string): void {
+  if (!PERIODS.has(period)) {
+    throw new AemetError(
+      `Invalid map period: ${JSON.stringify(period)}. Expected one of ${[...PERIODS].join(", ")}.`,
+    );
   }
-  return str;
 }

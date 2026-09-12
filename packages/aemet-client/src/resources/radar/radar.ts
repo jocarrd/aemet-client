@@ -1,9 +1,9 @@
 import { AemetError, AemetInvalidResponseError } from "../../errors.js";
 import type { RequestOptions } from "../../transport.js";
 import { Resource } from "../base.js";
-import type { RadarImage, RegionalRadarCode } from "./types.js";
+import { REGIONAL_RADARS, type RadarImage, type RegionalRadarCode } from "./types.js";
 
-const REGIONAL_RE = /^[a-z]{2}$/i;
+const REGIONAL = new Set<string>(Object.values(REGIONAL_RADARS));
 
 export class RadarResource extends Resource {
   async nationalUrl(options: RequestOptions = {}): Promise<{ url: string; metadataUrl?: string }> {
@@ -63,9 +63,9 @@ export class RadarResource extends Resource {
 }
 
 function assertRegional(code: string): void {
-  if (!REGIONAL_RE.test(code)) {
+  if (!REGIONAL.has(code.toLowerCase())) {
     throw new AemetError(
-      `Invalid regional radar code: ${JSON.stringify(code)}. Expected a 2-letter code (e.g. "vc", "ba").`,
+      `Invalid regional radar code: ${JSON.stringify(code)}. Expected one of ${[...REGIONAL].join(", ")}.`,
     );
   }
 }
