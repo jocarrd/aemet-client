@@ -13,8 +13,8 @@ cross-checked with the OpenAPI specification AEMET publishes at
 ### Breaking
 
 - **`beach`**: `BeachForecastDay` now describes what AEMET actually returns.
-  `estadoCielo`, `viento` and `oleaje` are `{ value, f1, descripcion1, f2,
-  descripcion2 }`, where `f1` is the morning and `f2` the afternoon. `tMaxima`,
+  `estadoCielo`, `viento` and `oleaje` carry a morning and an afternoon value
+  (`f1` and `f2`, each with its description), not a single one. `tMaxima`,
   `tAgua` and `uvMax` are objects with `valor1`, not numbers. `fecha`,
   `localidad` and `id` are numbers. `municipio`, `subZona` and `origen.enlace`
   are gone, because the API never sent them. Beach codes are validated as
