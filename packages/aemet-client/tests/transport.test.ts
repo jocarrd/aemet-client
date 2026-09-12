@@ -34,7 +34,10 @@ function mockFetch(responses: MockResponse[]): { fetch: FetchLike; calls: string
   return { fetch: fetchFn, calls };
 }
 
-function buildTransport(fetch: FetchLike, overrides: Partial<ConstructorParameters<typeof Transport>[0]> = {}) {
+function buildTransport(
+  fetch: FetchLike,
+  overrides: Partial<ConstructorParameters<typeof Transport>[0]> = {},
+) {
   return new Transport({
     apiKey: "test-key",
     fetch,
@@ -130,9 +133,7 @@ describe("Transport", () => {
   });
 
   it("rejects when envelope estado is 200 but datos is missing", async () => {
-    const { fetch } = mockFetch([
-      { status: 200, body: { descripcion: "exito", estado: 200 } },
-    ]);
+    const { fetch } = mockFetch([{ status: 200, body: { descripcion: "exito", estado: 200 } }]);
     const t = buildTransport(fetch);
     await expect(t.request("/foo")).rejects.toBeInstanceOf(AemetInvalidResponseError);
   });

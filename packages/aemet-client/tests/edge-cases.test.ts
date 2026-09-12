@@ -35,7 +35,13 @@ describe("Transport edge cases", () => {
           reject(err);
         });
       });
-    const t = new Transport({ apiKey: "k", fetch, maxRetries: 0, timeoutMs: 20, retryBaseDelayMs: 1 });
+    const t = new Transport({
+      apiKey: "k",
+      fetch,
+      maxRetries: 0,
+      timeoutMs: 20,
+      retryBaseDelayMs: 1,
+    });
     await expect(t.requestEnvelope("/foo")).rejects.toBeInstanceOf(AemetNetworkError);
   });
 
@@ -58,8 +64,8 @@ describe("Transport edge cases", () => {
 
   it("decodes ISO-8859-1 JSON responses when charset is declared", async () => {
     const latin1 = new Uint8Array([
-      0x7b, 0x22, 0x6e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x22, 0x3a, 0x22, 0xc1, 0x76, 0x69, 0x6c, 0x61,
-      0x22, 0x2c, 0x22, 0x6e, 0x22, 0x3a, 0x31, 0x7d,
+      0x7b, 0x22, 0x6e, 0x6f, 0x6d, 0x62, 0x72, 0x65, 0x22, 0x3a, 0x22, 0xc1, 0x76, 0x69, 0x6c,
+      0x61, 0x22, 0x2c, 0x22, 0x6e, 0x22, 0x3a, 0x31, 0x7d,
     ]);
     const fetch: FetchLike = async () =>
       new Response(latin1 as BlobPart, {
@@ -80,7 +86,11 @@ describe("Transport edge cases", () => {
       seen.push({ url: String(url), key: headers["api_key"] ?? null });
       if (seen.length === 1) {
         return new Response(
-          JSON.stringify({ descripcion: "exito", estado: 200, datos: "https://opendata.aemet.es/sh/d" }),
+          JSON.stringify({
+            descripcion: "exito",
+            estado: 200,
+            datos: "https://opendata.aemet.es/sh/d",
+          }),
           { status: 200, headers: { "content-type": "application/json" } },
         );
       }
@@ -127,7 +137,9 @@ describe("parseSpanishNumber edge cases", () => {
 describe("toAemetDate edge cases", () => {
   it("formats dates near year boundaries in UTC", () => {
     expect(toAemetDate(new Date(Date.UTC(2026, 0, 1, 0, 0, 0)))).toBe("2026-01-01T00:00:00UTC");
-    expect(toAemetDate(new Date(Date.UTC(2025, 11, 31, 23, 59, 59)))).toBe("2025-12-31T23:59:59UTC");
+    expect(toAemetDate(new Date(Date.UTC(2025, 11, 31, 23, 59, 59)))).toBe(
+      "2025-12-31T23:59:59UTC",
+    );
   });
 
   it("zero-pads single digits", () => {
@@ -317,10 +329,13 @@ describe("Climatology boundary cases", () => {
   it("accepts a range of exactly 5 years", async () => {
     const fetch: FetchLike = async (url) =>
       String(url).includes("/diarios/")
-        ? new Response(JSON.stringify({ descripcion: "exito", estado: 200, datos: "https://x/d" }), {
-            status: 200,
-            headers: { "content-type": "application/json" },
-          })
+        ? new Response(
+            JSON.stringify({ descripcion: "exito", estado: 200, datos: "https://x/d" }),
+            {
+              status: 200,
+              headers: { "content-type": "application/json" },
+            },
+          )
         : new Response("[]", { status: 200, headers: { "content-type": "application/json" } });
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
     await expect(c.climatology.daily("3195", "2021-01-01", "2025-12-30")).resolves.toBeDefined();

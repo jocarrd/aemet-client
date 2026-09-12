@@ -41,10 +41,10 @@ or `%APPDATA%\Claude\claude_desktop_config.json` on Windows and add:
 }
 ```
 
-Restart Claude Desktop and ask: *"What's the weather forecast for Madrid this
-week?"*, *"Are there any active weather warnings in Catalonia right now?"*,
-*"How much did it rain in Logroño last August?"* or *"What's the water
-temperature at La Concha?"*.
+Restart Claude Desktop and ask: _"What's the weather forecast for Madrid this
+week?"_, _"Are there any active weather warnings in Catalonia right now?"_,
+_"How much did it rain in Logroño last August?"_ or _"What's the water
+temperature at La Concha?"_.
 
 ## Use it from Cursor / Windsurf / Zed
 
@@ -57,30 +57,30 @@ Same config object — every MCP-capable client accepts the
 
 AEMET's official forecast for any of Spain's 8000+ municipalities.
 
-| Argument      | Type                     | Notes                                                                 |
-|---------------|--------------------------|-----------------------------------------------------------------------|
-| `location`    | string                   | Name (`"Madrid"`, `"Logroño"`, `"A Coruña"`) or 5-digit INE code      |
-| `days`        | integer 1-7 (optional)   | Defaults to 3. Ignored when `granularity="hourly"`                    |
-| `granularity` | `"daily"` \| `"hourly"`  | Daily summary or next ~40h hour-by-hour                               |
+| Argument      | Type                    | Notes                                                            |
+| ------------- | ----------------------- | ---------------------------------------------------------------- |
+| `location`    | string                  | Name (`"Madrid"`, `"Logroño"`, `"A Coruña"`) or 5-digit INE code |
+| `days`        | integer 1-7 (optional)  | Defaults to 3. Ignored when `granularity="hourly"`               |
+| `granularity` | `"daily"` \| `"hourly"` | Daily summary or next ~40h hour-by-hour                          |
 
 ### `get_warnings`
 
 Active CAP (Common Alerting Protocol) warnings for an autonomous community
 or the whole country.
 
-| Argument      | Type                                            | Notes                                                    |
-|---------------|-------------------------------------------------|----------------------------------------------------------|
-| `area`        | string                                          | `"Cataluña"`, `"Madrid"`, `"73"` (La Rioja), `"esp"` …  |
-| `language`    | `"es" \| "en" \| "ca" \| "gl" \| "eu" \| "any"` | Preferred warning language. Defaults to `"es"`           |
-| `minSeverity` | `"Minor" \| "Moderate" \| "Severe" \| "Extreme"`| Drop warnings below this threshold                       |
+| Argument      | Type                                             | Notes                                                  |
+| ------------- | ------------------------------------------------ | ------------------------------------------------------ |
+| `area`        | string                                           | `"Cataluña"`, `"Madrid"`, `"73"` (La Rioja), `"esp"` … |
+| `language`    | `"es" \| "en" \| "ca" \| "gl" \| "eu" \| "any"`  | Preferred warning language. Defaults to `"es"`         |
+| `minSeverity` | `"Minor" \| "Moderate" \| "Severe" \| "Extreme"` | Drop warnings below this threshold                     |
 
 ### `get_nearest_observation`
 
 Latest real-time observation (temperature, humidity, wind, precipitation,
 pressure, visibility) from the AEMET station closest to a location.
 
-| Argument   | Type   | Notes                                                                                          |
-|------------|--------|------------------------------------------------------------------------------------------------|
+| Argument   | Type   | Notes                                                                         |
+| ---------- | ------ | ----------------------------------------------------------------------------- |
 | `location` | string | Municipality name, INE code, or decimal coordinate pair (`"40.4168,-3.7038"`) |
 
 ### `get_climate_history`
@@ -88,12 +88,12 @@ pressure, visibility) from the AEMET station closest to a location.
 Historical climate data from the AEMET station closest to a location: either
 daily records over a date range or the station's long-term monthly normals.
 
-| Argument   | Type                        | Notes                                                                       |
-|------------|-----------------------------|-----------------------------------------------------------------------------|
-| `location` | string                      | Municipality name, INE code, or decimal coordinate pair                     |
-| `mode`     | `"range"` \| `"normals"`    | `"range"` (default) reads daily records. `"normals"` reads monthly averages |
-| `from`     | string                      | `YYYY-MM-DD`. Required for `"range"`                                        |
-| `to`       | string (optional)           | `YYYY-MM-DD`, defaults to today                                             |
+| Argument   | Type                     | Notes                                                                       |
+| ---------- | ------------------------ | --------------------------------------------------------------------------- |
+| `location` | string                   | Municipality name, INE code, or decimal coordinate pair                     |
+| `mode`     | `"range"` \| `"normals"` | `"range"` (default) reads daily records. `"normals"` reads monthly averages |
+| `from`     | string                   | `YYYY-MM-DD`. Required for `"range"`                                        |
+| `to`       | string (optional)        | `YYYY-MM-DD`, defaults to today                                             |
 
 AEMET caps daily climate queries at **186 days** per request, so longer ranges
 are rejected with a message explaining it. Ranges over a month come back
@@ -106,11 +106,11 @@ Three-day forecast for any of the 591 beaches AEMET covers during the bathing
 season: sky, wind and waves split into morning and afternoon, plus maximum
 temperature, water temperature, thermal sensation and UV index.
 
-| Argument       | Type              | Notes                                                                                     |
-|----------------|-------------------|-------------------------------------------------------------------------------------------|
+| Argument       | Type              | Notes                                                                                                                 |
+| -------------- | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `location`     | string            | Beach name (`"La Concha"`, `"Es Trenc"`), a coastal municipality to list its beaches, or the 7-digit AEMET beach code |
-| `municipality` | string (optional) | Municipality or province, to disambiguate beaches that share a name                       |
-| `days`         | integer 1-3       | Defaults to 3                                                                             |
+| `municipality` | string (optional) | Municipality or province, to disambiguate beaches that share a name                                                   |
+| `days`         | integer 1-3       | Defaults to 3                                                                                                         |
 
 Names resolve without accents and tolerate how people actually write them
 (`"la kontxa"`, `"playa de la concha, suances"`). When a name matches more than

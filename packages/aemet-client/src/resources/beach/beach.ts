@@ -18,8 +18,6 @@ export class BeachResource extends Resource {
 
 function assertPlaya(playa: string): void {
   if (!PLAYA_RE.test(playa)) {
-    throw new AemetError(
-      `Invalid beach code: ${JSON.stringify(playa)}. Expected 5-11 digits.`,
-    );
+    throw new AemetError(`Invalid beach code: ${JSON.stringify(playa)}. Expected 5-11 digits.`);
   }
 }

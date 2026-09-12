@@ -69,7 +69,8 @@ export class Transport {
   }
 
   async request<T>(endpoint: string, options: RequestOptions = {}): Promise<EnvelopeResult<T>> {
-    const cacheKey = this.#cache && !options.skipCache ? this.#cacheKey(endpoint, options.query) : undefined;
+    const cacheKey =
+      this.#cache && !options.skipCache ? this.#cacheKey(endpoint, options.query) : undefined;
     if (cacheKey !== undefined && this.#cache) {
       const cached = await this.#cache.adapter.get(cacheKey);
       if (cached !== undefined) return cached as EnvelopeResult<T>;
@@ -150,7 +151,11 @@ export class Transport {
     return qs ? `${base}?${qs}` : base;
   }
 
-  async #fetchWithRetry(url: string, signal: AbortSignal | undefined, endpoint: string): Promise<Response> {
+  async #fetchWithRetry(
+    url: string,
+    signal: AbortSignal | undefined,
+    endpoint: string,
+  ): Promise<Response> {
     let attempt = 0;
     let lastError: unknown;
     while (attempt <= this.#maxRetries) {
@@ -187,7 +192,7 @@ export class Transport {
         method: "GET",
         headers: {
           accept: "application/json",
-          "api_key": this.#apiKey,
+          api_key: this.#apiKey,
           "user-agent": this.#userAgent,
         },
         signal: controller.signal,
@@ -252,7 +257,10 @@ export class Transport {
 
 async function readBodyText(response: Response): Promise<string> {
   const contentType = response.headers.get("content-type") ?? "";
-  const charset = contentType.match(/charset=([^;]+)/i)?.[1]?.trim().toLowerCase();
+  const charset = contentType
+    .match(/charset=([^;]+)/i)?.[1]
+    ?.trim()
+    .toLowerCase();
   if (!charset || charset === "utf-8" || charset === "utf8") {
     return response.text();
   }

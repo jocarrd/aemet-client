@@ -11,8 +11,7 @@ export const SATELLITE_PRODUCTS = {
 } as const;
 
 export type SatelliteProduct =
-  | (typeof SATELLITE_PRODUCTS)[keyof typeof SATELLITE_PRODUCTS]
-  | (string & {});
+  (typeof SATELLITE_PRODUCTS)[keyof typeof SATELLITE_PRODUCTS] | (string & {});
 
 export interface SatelliteImage {
   url: string;

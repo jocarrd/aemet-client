@@ -63,11 +63,11 @@ AEMET uses the standard CAP severity scale, mapped 1-to-1 to its public
 warning colours:
 
 | CAP `severity` | AEMET colour |
-| --- | --- |
-| `Minor` | green |
-| `Moderate` | yellow |
-| `Severe` | orange |
-| `Extreme` | red |
+| -------------- | ------------ |
+| `Minor`        | green        |
+| `Moderate`     | yellow       |
+| `Severe`       | orange       |
+| `Extreme`      | red          |
 
 The colour is also available inside `info.parameters[]` under
 `AEMET-Meteoalerta nivel`.

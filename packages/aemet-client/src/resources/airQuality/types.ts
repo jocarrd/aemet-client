@@ -5,8 +5,7 @@ export const POLLUTION_NETWORKS = {
 } as const;
 
 export type PollutionNetwork =
-  | (typeof POLLUTION_NETWORKS)[keyof typeof POLLUTION_NETWORKS]
-  | (string & {});
+  (typeof POLLUTION_NETWORKS)[keyof typeof POLLUTION_NETWORKS] | (string & {});
 
 export interface PollutionMeasurement {
   estacion: string;

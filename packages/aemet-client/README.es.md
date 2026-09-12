@@ -71,20 +71,20 @@ Ejecuta `npx aemet-client --help` para la lista completa.
 
 ## Recursos
 
-| Recurso | Métodos | Endpoint AEMET |
-| --- | --- | --- |
-| `prediction` | `municipalDaily`, `municipalHourly` | `/prediccion/especifica/municipio/*` |
-| `observation` | `allStations`, `station` | `/observacion/convencional/*` |
-| `warnings` | `latest` | `/avisos_cap/ultimoelaborado/*` |
-| `climatology` | `daily`, `monthly`, `normals`, `stationInventory` | `/valores/climatologicos/*` |
-| `beach` | `forecast` | `/prediccion/especifica/playa/{code}` |
-| `mountain` | `forecast`, `past` | `/prediccion/especifica/montaña/*` |
-| `maritime` | `highSeas`, `coastal` | `/prediccion/maritima/*` |
-| `radar` | `nationalUrl`, `regionalUrl`, `nationalImage`, `regionalImage` | `/red/radar/*` |
-| `satellite` | `productUrl`, `productImage` | `/satelites/producto/{producto}` |
-| `maps` | `analysisUrl`, `analysisImage`, `significantMapUrl`, `significantMapImage` | `/mapasygraficos/*` |
-| `antarctica` | `observations` | `/antartida/datos/...` |
-| `airQuality` | `backgroundPollution` | `/red/especial/contaminacionfondo/...` |
+| Recurso       | Métodos                                                                    | Endpoint AEMET                         |
+| ------------- | -------------------------------------------------------------------------- | -------------------------------------- |
+| `prediction`  | `municipalDaily`, `municipalHourly`                                        | `/prediccion/especifica/municipio/*`   |
+| `observation` | `allStations`, `station`                                                   | `/observacion/convencional/*`          |
+| `warnings`    | `latest`                                                                   | `/avisos_cap/ultimoelaborado/*`        |
+| `climatology` | `daily`, `monthly`, `normals`, `stationInventory`                          | `/valores/climatologicos/*`            |
+| `beach`       | `forecast`                                                                 | `/prediccion/especifica/playa/{code}`  |
+| `mountain`    | `forecast`, `past`                                                         | `/prediccion/especifica/montaña/*`     |
+| `maritime`    | `highSeas`, `coastal`                                                      | `/prediccion/maritima/*`               |
+| `radar`       | `nationalUrl`, `regionalUrl`, `nationalImage`, `regionalImage`             | `/red/radar/*`                         |
+| `satellite`   | `productUrl`, `productImage`                                               | `/satelites/producto/{producto}`       |
+| `maps`        | `analysisUrl`, `analysisImage`, `significantMapUrl`, `significantMapImage` | `/mapasygraficos/*`                    |
+| `antarctica`  | `observations`                                                             | `/antartida/datos/...`                 |
+| `airQuality`  | `backgroundPollution`                                                      | `/red/especial/contaminacionfondo/...` |
 
 Cada método resuelve internamente el sobre `datos` en dos pasos y te devuelve
 directamente el payload parseado. Consulta
@@ -108,9 +108,9 @@ Los endpoints climatológicos devuelven valores como `"5,2"` o `"1.020,4"`. Usa
 ```ts
 import { parseSpanishNumber } from "aemet-client";
 
-parseSpanishNumber("5,2");      // 5.2
-parseSpanishNumber("1.020,4");  // 1020.4
-parseSpanishNumber("");         // undefined
+parseSpanishNumber("5,2"); // 5.2
+parseSpanishNumber("1.020,4"); // 1020.4
+parseSpanishNumber(""); // undefined
 ```
 
 ### Helpers geo
@@ -130,11 +130,10 @@ import {
 const aemet = new AemetClient({ apiKey: process.env.AEMET_API_KEY! });
 const estaciones = await aemet.observation.allStations();
 
-const cercana = findNearest(
-  { lat: 40.4168, lon: -3.7038 },
-  estaciones,
-  (s) => ({ lat: s.lat, lon: s.lon }),
-);
+const cercana = findNearest({ lat: 40.4168, lon: -3.7038 }, estaciones, (s) => ({
+  lat: s.lat,
+  lon: s.lon,
+}));
 console.log(`${cercana?.item.ubi} — ${cercana?.distance.toFixed(1)} km`);
 
 const top3 = findNearestN(
@@ -194,13 +193,13 @@ const aemet = new AemetClient({
   apiKey: process.env.AEMET_API_KEY!,
   cache: {
     adapter: new MemoryCacheAdapter({ maxEntries: 500 }),
-    ttl: 300,           // segundos
+    ttl: 300, // segundos
     keyPrefix: "miapp", // opcional
   },
 });
 
-await aemet.prediction.municipalDaily("28079");  // primera llamada
-await aemet.prediction.municipalDaily("28079");  // sirve desde caché
+await aemet.prediction.municipalDaily("28079"); // primera llamada
+await aemet.prediction.municipalDaily("28079"); // sirve desde caché
 
 await aemet.prediction.municipalDaily("28079", { skipCache: true });
 await aemet.prediction.municipalDaily("28079", { cacheTtl: 60 });
@@ -249,13 +248,13 @@ try {
 }
 ```
 
-| Clase | Causa |
-| --- | --- |
-| `AemetAuthError` | HTTP 401/403 o `estado: 401` en el sobre |
-| `AemetNotFoundError` | HTTP 404 o `estado: 404` en el sobre |
-| `AemetRateLimitError` | HTTP 429, incluye `retryAfterMs` |
-| `AemetServerError` | HTTP 5xx tras agotar reintentos |
-| `AemetNetworkError` | Fallo de fetch/conexión |
+| Clase                       | Causa                                           |
+| --------------------------- | ----------------------------------------------- |
+| `AemetAuthError`            | HTTP 401/403 o `estado: 401` en el sobre        |
+| `AemetNotFoundError`        | HTTP 404 o `estado: 404` en el sobre            |
+| `AemetRateLimitError`       | HTTP 429, incluye `retryAfterMs`                |
+| `AemetServerError`          | HTTP 5xx tras agotar reintentos                 |
+| `AemetNetworkError`         | Fallo de fetch/conexión                         |
 | `AemetInvalidResponseError` | Sobre mal formado, JSON inválido, falta `datos` |
 
 El transport reintenta `408`, `425`, `429`, `500`, `502`, `503` y `504` con
@@ -284,9 +283,7 @@ Todos los métodos aceptan `signal: AbortSignal`:
 const controller = new AbortController();
 setTimeout(() => controller.abort(), 5_000);
 
-await aemet.prediction
-  .municipalDaily("28079", { signal: controller.signal })
-  .catch(() => null);
+await aemet.prediction.municipalDaily("28079", { signal: controller.signal }).catch(() => null);
 ```
 
 ## Compatibilidad de runtime

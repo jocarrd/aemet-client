@@ -2,11 +2,7 @@ import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { AemetClient, StationObservation } from "aemet-client";
 import { findNearest } from "aemet-client";
-import {
-  ResolutionError,
-  resolveMunicipality,
-  resolveMunicipalityByCoords,
-} from "../resolve.js";
+import { ResolutionError, resolveMunicipality, resolveMunicipalityByCoords } from "../resolve.js";
 import { errorContent } from "./shared.js";
 
 const inputSchema = {

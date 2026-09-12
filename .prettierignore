@@ -2,3 +2,5 @@ dist
 node_modules
 coverage
 pnpm-lock.yaml
+packages/aemet-client/src/data/municipalities.json
+packages/aemet-mcp/src/data/beaches.ts

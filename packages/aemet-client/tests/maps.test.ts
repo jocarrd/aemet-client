@@ -41,11 +41,11 @@ describe("MapsResource", () => {
 
   it("rejects invalid area and day", async () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
-    await expect(
-      c.maps.significantMapUrl("2026-05-17", "!!", 1),
-    ).rejects.toBeInstanceOf(AemetError);
-    await expect(
-      c.maps.significantMapUrl("2026-05-17", "esp", "abc"),
-    ).rejects.toBeInstanceOf(AemetError);
+    await expect(c.maps.significantMapUrl("2026-05-17", "!!", 1)).rejects.toBeInstanceOf(
+      AemetError,
+    );
+    await expect(c.maps.significantMapUrl("2026-05-17", "esp", "abc")).rejects.toBeInstanceOf(
+      AemetError,
+    );
   });
 });

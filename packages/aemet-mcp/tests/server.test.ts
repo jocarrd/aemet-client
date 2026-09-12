@@ -1,15 +1,22 @@
 import { describe, expect, it, vi } from "vitest";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { InMemoryTransport } from "@modelcontextprotocol/sdk/inMemory.js";
-import type { AemetClient, CapDocument, MunicipalDailyForecast, StationObservation } from "aemet-client";
+import type {
+  AemetClient,
+  CapDocument,
+  MunicipalDailyForecast,
+  StationObservation,
+} from "aemet-client";
 import { createServer } from "../src/server.js";
 
-function stubClient(overrides: Partial<{
-  daily: () => MunicipalDailyForecast[];
-  hourly: () => unknown[];
-  allStations: () => StationObservation[];
-  warnings: () => CapDocument[];
-}>): AemetClient {
+function stubClient(
+  overrides: Partial<{
+    daily: () => MunicipalDailyForecast[];
+    hourly: () => unknown[];
+    allStations: () => StationObservation[];
+    warnings: () => CapDocument[];
+  }>,
+): AemetClient {
   return {
     prediction: {
       municipalDaily: vi.fn(async () => overrides.daily?.() ?? []),
@@ -27,10 +34,7 @@ function stubClient(overrides: Partial<{
 
 async function connect(client: AemetClient) {
   const { server } = createServer({ client });
-  const mcp = new Client(
-    { name: "test-client", version: "0.0.0" },
-    { capabilities: {} },
-  );
+  const mcp = new Client({ name: "test-client", version: "0.0.0" }, { capabilities: {} });
   const [a, b] = InMemoryTransport.createLinkedPair();
   await Promise.all([server.connect(a), mcp.connect(b)]);
   return mcp;
@@ -59,9 +63,7 @@ describe("createServer", () => {
       fecha: "2026-05-19T00:00:00",
       probPrecipitacion: [{ value: "30", periodo: "00-24" }],
       cotaNieveProv: [],
-      estadoCielo: [
-        { value: "11", periodo: "00-24", descripcion: "Despejado" },
-      ],
+      estadoCielo: [{ value: "11", periodo: "00-24", descripcion: "Despejado" }],
       viento: [{ periodo: "00-24", direccion: "N", velocidad: "10" }],
       rachaMax: [],
       temperatura: { maxima: 22, minima: 11, dato: [] },

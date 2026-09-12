@@ -24,7 +24,12 @@ describe("RadarResource", () => {
     const calls: string[] = [];
     const fetch: FetchLike = async (url) => {
       calls.push(String(url));
-      return jsonResponse(envelope("https://opendata.aemet.es/sh/img-nacional.gif", "https://opendata.aemet.es/sh/metadata"));
+      return jsonResponse(
+        envelope(
+          "https://opendata.aemet.es/sh/img-nacional.gif",
+          "https://opendata.aemet.es/sh/metadata",
+        ),
+      );
     };
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
     const result = await c.radar.nationalUrl();

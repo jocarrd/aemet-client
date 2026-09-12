@@ -38,9 +38,7 @@ export class MountainResource extends Resource {
 
 function assertArea(area: string): void {
   if (!AREA_RE.test(area)) {
-    throw new AemetError(
-      `Invalid mountain area: ${JSON.stringify(area)}. Expected "1"-"8".`,
-    );
+    throw new AemetError(`Invalid mountain area: ${JSON.stringify(area)}. Expected "1"-"8".`);
   }
 }
 

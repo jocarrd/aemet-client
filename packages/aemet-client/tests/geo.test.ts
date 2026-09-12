@@ -91,7 +91,7 @@ describe("findNearestN", () => {
 
 describe("parseAemetCoordinate", () => {
   it("parses Madrid Retiro latitude", () => {
-    expect(parseAemetCoordinate("402411N")).toBeCloseTo(40.4030, 3);
+    expect(parseAemetCoordinate("402411N")).toBeCloseTo(40.403, 3);
   });
 
   it("parses negative longitudes (W)", () => {
@@ -103,7 +103,7 @@ describe("parseAemetCoordinate", () => {
   });
 
   it("accepts lowercase hemisphere", () => {
-    expect(parseAemetCoordinate("402411n")).toBeCloseTo(40.4030, 3);
+    expect(parseAemetCoordinate("402411n")).toBeCloseTo(40.403, 3);
   });
 
   it("rejects malformed values", () => {

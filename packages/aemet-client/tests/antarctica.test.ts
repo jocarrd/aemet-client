@@ -40,7 +40,9 @@ describe("AntarcticaResource", () => {
     const c = new AemetClient({ apiKey: "k", fetch, retryBaseDelayMs: 1 });
     const data = await c.antarctica.observations("89064", "2026-01-15", "2026-01-16");
     expect(data).toEqual(fixture);
-    expect(calls[0]).toContain("/antartida/datos/fechaini/2026-01-15T00:00:00UTC/fechafin/2026-01-16T00:00:00UTC/estacion/89064");
+    expect(calls[0]).toContain(
+      "/antartida/datos/fechaini/2026-01-15T00:00:00UTC/fechafin/2026-01-16T00:00:00UTC/estacion/89064",
+    );
   });
 
   it("rejects invalid station ids", async () => {

@@ -45,6 +45,8 @@ describe("AirQualityResource", () => {
   it("validates station and network codes", async () => {
     const c = new AemetClient({ apiKey: "k", fetch: (async () => new Response()) as FetchLike });
     await expect(c.airQuality.backgroundPollution("!!", "esp")).rejects.toBeInstanceOf(AemetError);
-    await expect(c.airQuality.backgroundPollution("ES1778A", "!")).rejects.toBeInstanceOf(AemetError);
+    await expect(c.airQuality.backgroundPollution("ES1778A", "!")).rejects.toBeInstanceOf(
+      AemetError,
+    );
   });
 });

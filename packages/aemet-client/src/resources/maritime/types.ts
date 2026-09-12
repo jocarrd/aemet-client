@@ -2,7 +2,14 @@ export type HighSeasArea = string;
 export type CoastalArea = string;
 
 export interface MaritimeForecastSubzone {
-  origen: { productor: string; web: string; enlace: string; language: string; copyright: string; notaLegal: string };
+  origen: {
+    productor: string;
+    web: string;
+    enlace: string;
+    language: string;
+    copyright: string;
+    notaLegal: string;
+  };
   nombre: string;
   id: string;
   tipo: "altamar" | "costera";

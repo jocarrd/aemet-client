@@ -15,7 +15,8 @@ export const REGIONAL_RADARS = {
   zaragoza: "za",
 } as const;
 
-export type RegionalRadarCode = (typeof REGIONAL_RADARS)[keyof typeof REGIONAL_RADARS] | (string & {});
+export type RegionalRadarCode =
+  (typeof REGIONAL_RADARS)[keyof typeof REGIONAL_RADARS] | (string & {});
 
 export interface RadarImage {
   url: string;

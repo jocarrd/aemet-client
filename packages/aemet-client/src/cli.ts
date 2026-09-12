@@ -291,7 +291,9 @@ function printJson(stdout: Writer, value: unknown): number {
   return 0;
 }
 
-const isCli = import.meta.url === `file://${process.argv[1]}` || import.meta.url.endsWith(process.argv[1] ?? "");
+const isCli =
+  import.meta.url === `file://${process.argv[1]}` ||
+  import.meta.url.endsWith(process.argv[1] ?? "");
 if (isCli) {
   run(process.argv.slice(2)).then(
     (code) => process.exit(code),

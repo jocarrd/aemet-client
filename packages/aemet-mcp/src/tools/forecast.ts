@@ -1,10 +1,6 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import type {
-  AemetClient,
-  MunicipalDailyForecast,
-  MunicipalHourlyForecast,
-} from "aemet-client";
+import type { AemetClient, MunicipalDailyForecast, MunicipalHourlyForecast } from "aemet-client";
 import { ResolutionError, resolveMunicipality } from "../resolve.js";
 import { errorContent } from "./shared.js";
 
@@ -21,7 +17,9 @@ const inputSchema = {
     .min(1)
     .max(7)
     .optional()
-    .describe("Daily forecasts: number of days to include (1-7, default 3). Ignored when granularity='hourly'."),
+    .describe(
+      "Daily forecasts: number of days to include (1-7, default 3). Ignored when granularity='hourly'.",
+    ),
   granularity: z
     .enum(["daily", "hourly"])
     .optional()
@@ -50,9 +48,7 @@ export function registerForecastTool(server: McpServer, client: AemetClient): vo
             return errorContent(`AEMET returned no hourly data for ${municipality.name}.`);
           }
           return {
-            content: [
-              { type: "text", text: formatHourly(doc, municipality.name) },
-            ],
+            content: [{ type: "text", text: formatHourly(doc, municipality.name) }],
           };
         }
 
@@ -121,7 +117,9 @@ function primaryDescription<T extends { descripcion?: string; periodo?: string }
   return day?.descripcion;
 }
 
-function primaryProbability(entries: Array<{ value: string; periodo?: string }>): string | undefined {
+function primaryProbability(
+  entries: Array<{ value: string; periodo?: string }>,
+): string | undefined {
   const day = entries.find((e) => e.periodo === "00-24") ?? entries[0];
   return day ? `${day.value}%` : undefined;
 }

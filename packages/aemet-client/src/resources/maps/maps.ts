@@ -8,9 +8,7 @@ const AREA_RE = /^[a-z]{1,4}$/i;
 const DAY_RE = /^\d{1,2}$/;
 
 export class MapsResource extends Resource {
-  async analysisUrl(
-    options: RequestOptions = {},
-  ): Promise<{ url: string; metadataUrl?: string }> {
+  async analysisUrl(options: RequestOptions = {}): Promise<{ url: string; metadataUrl?: string }> {
     return this.#fetchUrl("/mapasygraficos/analisis", options);
   }
 

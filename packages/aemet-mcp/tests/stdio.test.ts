@@ -3,9 +3,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
-const BIN_PATH = resolve(
-  fileURLToPath(new URL("../dist/bin.js", import.meta.url)),
-);
+const BIN_PATH = resolve(fileURLToPath(new URL("../dist/bin.js", import.meta.url)));
 
 interface RpcRequest {
   jsonrpc: "2.0";
@@ -57,7 +55,12 @@ class StdioHarness {
 
   request(method: string, params?: unknown): Promise<RpcResponse> {
     const id = this.nextId++;
-    const req: RpcRequest = { jsonrpc: "2.0", id, method, ...(params !== undefined ? { params } : {}) };
+    const req: RpcRequest = {
+      jsonrpc: "2.0",
+      id,
+      method,
+      ...(params !== undefined ? { params } : {}),
+    };
     return new Promise((resolveResp, rejectResp) => {
       const timer = setTimeout(() => {
         this.pending.delete(id);
@@ -125,16 +128,14 @@ describe("aemet-mcp binary (stdio)", () => {
   });
 
   it("rejects --help with usage on stdout, not the MCP stream", async () => {
-    const result = await new Promise<{ code: number | null; stdout: string }>(
-      (resolveResult) => {
-        const proc = spawn("node", [BIN_PATH, "--help"], {
-          env: { ...process.env, AEMET_API_KEY: "dummy" },
-        });
-        let stdout = "";
-        proc.stdout.on("data", (c) => (stdout += String(c)));
-        proc.on("exit", (code) => resolveResult({ code, stdout }));
-      },
-    );
+    const result = await new Promise<{ code: number | null; stdout: string }>((resolveResult) => {
+      const proc = spawn("node", [BIN_PATH, "--help"], {
+        env: { ...process.env, AEMET_API_KEY: "dummy" },
+      });
+      let stdout = "";
+      proc.stdout.on("data", (c) => (stdout += String(c)));
+      proc.on("exit", (code) => resolveResult({ code, stdout }));
+    });
     expect(result.code).toBe(0);
     expect(result.stdout).toContain("aemet-mcp");
     expect(result.stdout).toContain("AEMET_API_KEY");

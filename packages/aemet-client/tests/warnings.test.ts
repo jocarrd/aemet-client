@@ -70,7 +70,10 @@ describe("parseCapXml", () => {
 });
 
 describe("WarningsResource", () => {
-  function setupTarFetch(tarBytes: Uint8Array, contentType = "application/x-tar"): {
+  function setupTarFetch(
+    tarBytes: Uint8Array,
+    contentType = "application/x-tar",
+  ): {
     fetch: FetchLike;
     calls: string[];
   } {

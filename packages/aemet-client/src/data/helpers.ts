@@ -6,7 +6,10 @@ export function findNearestMunicipality(target: GeoPoint): NearestMatch<Municipa
   return findNearest(target, MUNICIPALITIES, (m) => ({ lat: m.lat, lon: m.lon }));
 }
 
-export function findNearestMunicipalities(target: GeoPoint, n: number): NearestMatch<Municipality>[] {
+export function findNearestMunicipalities(
+  target: GeoPoint,
+  n: number,
+): NearestMatch<Municipality>[] {
   return findNearestN(target, MUNICIPALITIES, (m) => ({ lat: m.lat, lon: m.lon }), n);
 }
 
@@ -32,7 +35,9 @@ export function findMunicipalitiesByName(name: string, limit = 20): Municipality
       results.push({ municipality: m, score: 1 });
     }
   }
-  results.sort((a, b) => b.score - a.score || a.municipality.name.localeCompare(b.municipality.name));
+  results.sort(
+    (a, b) => b.score - a.score || a.municipality.name.localeCompare(b.municipality.name),
+  );
   return results.slice(0, limit).map((r) => r.municipality);
 }
 
@@ -42,9 +47,5 @@ export function findMunicipalitiesByProvince(provinceCode: string): Municipality
 }
 
 function normalize(value: string): string {
-  return value
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .trim();
+  return value.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
 }

@@ -62,7 +62,14 @@ describe("CLI", () => {
         status: 200,
         body: [
           {
-            origen: { productor: "AEMET", web: "", enlace: "", language: "es", copyright: "", notaLegal: "" },
+            origen: {
+              productor: "AEMET",
+              web: "",
+              enlace: "",
+              language: "es",
+              copyright: "",
+              notaLegal: "",
+            },
             elaborado: "2026-05-17",
             nombre: "Madrid",
             provincia: "Madrid",

@@ -71,10 +71,7 @@ export function registerWarningsTool(server: McpServer, client: AemetClient): vo
   );
 }
 
-function pickInfo(
-  infos: CapInfo[],
-  language: string,
-): CapInfo | undefined {
+function pickInfo(infos: CapInfo[], language: string): CapInfo | undefined {
   if (language === "any") return infos[0];
   const tag = `${language}-`;
   return infos.find((i) => i.language.toLowerCase().startsWith(tag)) ?? infos[0];
@@ -97,9 +94,7 @@ function formatWarnings(
     kept++;
     rows.push(`[${info.severity}] ${info.event}`);
     rows.push(`  ${info.headline}`);
-    rows.push(
-      `  effective: ${info.effective ?? "n/a"}  →  expires: ${info.expires ?? "n/a"}`,
-    );
+    rows.push(`  effective: ${info.effective ?? "n/a"}  →  expires: ${info.expires ?? "n/a"}`);
     const areas = info.area
       .map((a) => a.areaDesc)
       .filter(Boolean)

@@ -1,11 +1,7 @@
 import { AemetError } from "../../errors.js";
 import type { RequestOptions } from "../../transport.js";
 import { Resource } from "../base.js";
-import type {
-  MunicipalDailyForecast,
-  MunicipalHourlyForecast,
-  MunicipioCode,
-} from "./types.js";
+import type { MunicipalDailyForecast, MunicipalHourlyForecast, MunicipioCode } from "./types.js";
 
 const MUNICIPIO_RE = /^\d{5}$/;
 

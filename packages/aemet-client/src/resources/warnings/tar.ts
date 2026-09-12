@@ -41,7 +41,8 @@ export function parseTar(buffer: Uint8Array): TarEntry[] {
       name,
       size,
       content,
-      type: typeFlag === "0" || typeFlag === "\0" ? "file" : typeFlag === "5" ? "directory" : "other",
+      type:
+        typeFlag === "0" || typeFlag === "\0" ? "file" : typeFlag === "5" ? "directory" : "other",
     });
     offset = dataStart + Math.ceil(size / BLOCK_SIZE) * BLOCK_SIZE;
   }

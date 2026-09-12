@@ -3,10 +3,10 @@
 Tools for working with [AEMET OpenData](https://opendata.aemet.es/), the
 public API of Spain's State Meteorological Agency.
 
-| Package | Description | npm |
-| --- | --- | --- |
-| [`aemet-client`](packages/aemet-client) | Typed TypeScript SDK + CLI for AEMET OpenData. Used in production at [snowy.es](https://snowy.es). | [![npm version](https://img.shields.io/npm/v/aemet-client.svg)](https://www.npmjs.com/package/aemet-client) |
-| [`aemet-mcp`](packages/aemet-mcp) | Model Context Protocol server: plug AEMET into Claude Desktop, Cursor, Windsurf or any MCP client. Forecasts, warnings, live observations, climate history and beach forecasts. Runs locally over stdio. | [![npm version](https://img.shields.io/npm/v/aemet-mcp.svg)](https://www.npmjs.com/package/aemet-mcp) |
+| Package                                 | Description                                                                                                                                                                                              | npm                                                                                                         |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| [`aemet-client`](packages/aemet-client) | Typed TypeScript SDK + CLI for AEMET OpenData. Used in production at [snowy.es](https://snowy.es).                                                                                                       | [![npm version](https://img.shields.io/npm/v/aemet-client.svg)](https://www.npmjs.com/package/aemet-client) |
+| [`aemet-mcp`](packages/aemet-mcp)       | Model Context Protocol server: plug AEMET into Claude Desktop, Cursor, Windsurf or any MCP client. Forecasts, warnings, live observations, climate history and beach forecasts. Runs locally over stdio. | [![npm version](https://img.shields.io/npm/v/aemet-mcp.svg)](https://www.npmjs.com/package/aemet-mcp)       |
 
 ## Quick links
 

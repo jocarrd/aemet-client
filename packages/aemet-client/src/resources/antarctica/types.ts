@@ -4,8 +4,7 @@ export const ANTARCTICA_STATIONS = {
 } as const;
 
 export type AntarcticaStation =
-  | (typeof ANTARCTICA_STATIONS)[keyof typeof ANTARCTICA_STATIONS]
-  | (string & {});
+  (typeof ANTARCTICA_STATIONS)[keyof typeof ANTARCTICA_STATIONS] | (string & {});
 
 export interface AntarcticaObservation {
   identificacion: string;

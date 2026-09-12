@@ -1,9 +1,4 @@
-export {
-  createServer,
-  SERVER_NAME,
-  SERVER_VERSION,
-  type CreateServerOptions,
-} from "./server.js";
+export { createServer, SERVER_NAME, SERVER_VERSION, type CreateServerOptions } from "./server.js";
 export {
   resolveMunicipality,
   resolveMunicipalityByCoords,

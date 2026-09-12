@@ -5,8 +5,7 @@ export const SIGNIFICANT_MAP_AREAS = {
 } as const;
 
 export type SignificantMapArea =
-  | (typeof SIGNIFICANT_MAP_AREAS)[keyof typeof SIGNIFICANT_MAP_AREAS]
-  | (string & {});
+  (typeof SIGNIFICANT_MAP_AREAS)[keyof typeof SIGNIFICANT_MAP_AREAS] | (string & {});
 
 export interface MapImage {
   url: string;
