@@ -3,9 +3,11 @@ import { AemetClient, type AemetClientConfig } from "aemet-client";
 import { registerForecastTool } from "./tools/forecast.js";
 import { registerWarningsTool } from "./tools/warnings.js";
 import { registerObservationTool } from "./tools/observation.js";
+import { registerClimatologyTool } from "./tools/climatology.js";
+import { registerBeachTool } from "./tools/beach.js";
 
 export const SERVER_NAME = "aemet-mcp";
-export const SERVER_VERSION = "0.1.2";
+export const SERVER_VERSION = "0.2.0";
 
 export interface CreateServerOptions {
   apiKey?: string;
@@ -27,6 +29,8 @@ export function createServer(options: CreateServerOptions = {}): {
   registerForecastTool(server, client);
   registerWarningsTool(server, client);
   registerObservationTool(server, client);
+  registerClimatologyTool(server, client);
+  registerBeachTool(server, client);
 
   return { server, client };
 }

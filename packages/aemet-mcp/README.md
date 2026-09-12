@@ -42,7 +42,9 @@ or `%APPDATA%\Claude\claude_desktop_config.json` on Windows and add:
 ```
 
 Restart Claude Desktop and ask: *"What's the weather forecast for Madrid this
-week?"* or *"Are there any active weather warnings in Catalonia right now?"*.
+week?"*, *"Are there any active weather warnings in Catalonia right now?"*,
+*"How much did it rain in Logroño last August?"* or *"What's the water
+temperature at La Concha?"*.
 
 ## Use it from Cursor / Windsurf / Zed
 
@@ -80,6 +82,40 @@ pressure, visibility) from the AEMET station closest to a location.
 | Argument   | Type   | Notes                                                                                          |
 |------------|--------|------------------------------------------------------------------------------------------------|
 | `location` | string | Municipality name, INE code, or decimal coordinate pair (`"40.4168,-3.7038"`) |
+
+### `get_climate_history`
+
+Historical climate data from the AEMET station closest to a location: either
+daily records over a date range or the station's long-term monthly normals.
+
+| Argument   | Type                        | Notes                                                                       |
+|------------|-----------------------------|-----------------------------------------------------------------------------|
+| `location` | string                      | Municipality name, INE code, or decimal coordinate pair                     |
+| `mode`     | `"range"` \| `"normals"`    | `"range"` (default) reads daily records. `"normals"` reads monthly averages |
+| `from`     | string                      | `YYYY-MM-DD`. Required for `"range"`                                        |
+| `to`       | string (optional)           | `YYYY-MM-DD`, defaults to today                                             |
+
+AEMET caps daily climate queries at **186 days** per request, so longer ranges
+are rejected with a message explaining it. Ranges over a month come back
+aggregated by month (mean max/min, extremes, total precipitation, rain days)
+instead of one line per day.
+
+### `get_beach_forecast`
+
+Three-day forecast for any of the 591 beaches AEMET covers during the bathing
+season: sky, wind and waves split into morning and afternoon, plus maximum
+temperature, water temperature, thermal sensation and UV index.
+
+| Argument       | Type              | Notes                                                                                     |
+|----------------|-------------------|-------------------------------------------------------------------------------------------|
+| `location`     | string            | Beach name (`"La Concha"`, `"Es Trenc"`), a coastal municipality to list its beaches, or the 7-digit AEMET beach code |
+| `municipality` | string (optional) | Municipality or province, to disambiguate beaches that share a name                       |
+| `days`         | integer 1-3       | Defaults to 3                                                                             |
+
+Names resolve without accents and tolerate how people actually write them
+(`"la kontxa"`, `"playa de la concha, suances"`). When a name matches more than
+one beach, the server answers with the candidates and their codes. Outside the
+bathing season AEMET stops publishing and the tool says so.
 
 ## Programmatic use
 

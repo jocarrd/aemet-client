@@ -1,18 +1,18 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.jocarrd/aemet-mcp",
-  "description": "MCP server for AEMET — Spain's weather agency. Forecasts, CAP warnings, station observations.",
+  "description": "MCP server for AEMET \u2014 Spain's weather agency. Forecasts, CAP warnings, station observations, climate history and beach forecasts.",
   "repository": {
     "url": "https://github.com/jocarrd/aemet-client",
     "source": "github",
     "subfolder": "packages/aemet-mcp"
   },
-  "version": "0.1.2",
+  "version": "0.2.0",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "aemet-mcp",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "transport": {
         "type": "stdio"
       },
