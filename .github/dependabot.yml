@@ -7,6 +7,14 @@ updates:
     groups:
       dev-dependencies:
         dependency-type: development
+    # TypeScript 7 no entra todavia. tsup revienta al generar los tipos y
+    # typescript-eslint declara `typescript >=4.8.4 <6.1.0` en sus peers, asi
+    # que con la 7 eslint ni arranca. Medido el 12 y el 13-09-2026 contra la
+    # ultima de las dos. Quitar esta regla cuando typescript-eslint publique
+    # soporte: github.com/typescript-eslint/typescript-eslint/issues/10940
+    ignore:
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: github-actions
     directory: /
     schedule:
