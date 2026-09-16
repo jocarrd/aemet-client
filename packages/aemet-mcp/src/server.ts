@@ -23,7 +23,7 @@ export function createServer(options: CreateServerOptions = {}): {
   server: McpServer;
   client: AemetClient;
 } {
-  const client = options.client ?? buildClient(options);
+  const client = options.client ?? lazyClient(options);
 
   const server = new McpServer(
     { name: SERVER_NAME, version: SERVER_VERSION },
@@ -43,6 +43,25 @@ export function createServer(options: CreateServerOptions = {}): {
 }
 
 export const DEFAULT_CACHE_TTL_SECONDS = 600;
+
+/**
+ * The client is built on first use, not when the server starts. Without this,
+ * a missing AEMET_API_KEY killed the process before the handshake: MCP clients
+ * showed the server as broken instead of listing its tools, and registries that
+ * introspect servers (Glama, Docker MCP) could not enumerate them at all. Now
+ * `tools/list` works with no key, and the same clear error surfaces on the
+ * first tool call.
+ */
+function lazyClient(options: CreateServerOptions): AemetClient {
+  let real: AemetClient | undefined;
+  return new Proxy({} as AemetClient, {
+    get(_target, prop) {
+      real ??= buildClient(options);
+      const value: unknown = Reflect.get(real, prop, real);
+      return typeof value === "function" ? value.bind(real) : value;
+    },
+  });
+}
 const MAX_CACHE_ENTRIES = 500;
 
 function buildClient(options: CreateServerOptions): AemetClient {

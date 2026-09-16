@@ -86,8 +86,12 @@ class StdioHarness {
 }
 
 function launch(env: Record<string, string | undefined> = {}): StdioHarness {
+  const merged: Record<string, string | undefined> = { ...process.env, ...env };
+  for (const [key, value] of Object.entries(env)) {
+    if (value === undefined) delete merged[key];
+  }
   const proc = spawn("node", [BIN_PATH], {
-    env: { ...process.env, ...env },
+    env: merged,
     stdio: ["pipe", "pipe", "pipe"],
   }) as ChildProcessWithoutNullStreams;
   return new StdioHarness(proc);
@@ -128,6 +132,31 @@ describe("aemet-mcp binary (stdio)", () => {
       "get_nearest_observation",
       "get_warnings",
     ]);
+  });
+
+  it("starts without AEMET_API_KEY, lists tools, and reports the missing key on call", async () => {
+    // Registries that introspect MCP servers (Glama, Docker MCP) run them with
+    // no credentials. The server has to answer the handshake and tools/list
+    // anyway; the key only matters once a tool actually hits AEMET.
+    harness = launch({ AEMET_API_KEY: undefined });
+    const init = await harness.request("initialize", {
+      protocolVersion: "2024-11-05",
+      capabilities: {},
+      clientInfo: { name: "introspection", version: "0.0.0" },
+    });
+    expect(init.error).toBeUndefined();
+    harness.notify("notifications/initialized");
+
+    const list = await harness.request("tools/list");
+    expect(list.error).toBeUndefined();
+    expect((list.result as { tools: unknown[] }).tools).toHaveLength(8);
+
+    const call = await harness.request("tools/call", {
+      name: "get_warnings",
+      arguments: { area: "esp" },
+    });
+    const text = JSON.stringify(call.error ?? call.result);
+    expect(text).toContain("AEMET_API_KEY is required");
   });
 
   it("rejects --help with usage on stdout, not the MCP stream", async () => {

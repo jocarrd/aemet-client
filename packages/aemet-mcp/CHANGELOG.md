@@ -3,6 +3,23 @@
 All notable changes to `aemet-mcp` are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- The server starts without `AEMET_API_KEY`. The AEMET client is now built on
+  the first tool call instead of at startup, so the handshake and `tools/list`
+  work with no credentials and the same "AEMET_API_KEY is required" message
+  surfaces on that first call. Before, a missing key killed the process before
+  the handshake: MCP clients showed the server as broken, and registries that
+  introspect servers could not list its tools.
+
+### Added
+
+- `Dockerfile` at the repository root that builds and runs the server over
+  stdio, so registries that build and score MCP servers (Glama, Docker MCP) can
+  evaluate it.
+
 ## [0.3.0] — 2026-09-12
 
 ### Added
