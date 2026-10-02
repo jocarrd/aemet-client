@@ -5,6 +5,8 @@ All notable changes to `aemet-mcp` are documented here. This project follows
 
 ## [Unreleased]
 
+## [0.3.1] — 2026-10-02
+
 ### Changed
 
 - The server starts without `AEMET_API_KEY`. The AEMET client is now built on
@@ -19,6 +21,10 @@ All notable changes to `aemet-mcp` are documented here. This project follows
 - `Dockerfile` at the repository root that builds and runs the server over
   stdio, so registries that build and score MCP servers (Glama, Docker MCP) can
   evaluate it.
+
+### Dependencies
+
+- `@modelcontextprotocol/sdk` 1.30.0 → 1.30.1 and `zod` 4.6.4 → 4.6.5.
 
 ## [0.3.0] — 2026-09-12
 
