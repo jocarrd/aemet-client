@@ -59,10 +59,10 @@
     "node": ">=20.19"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.6.3",
     "tsup": "^8.3.5",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.0"
+    "vitest": "^5.0.2"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.1",
