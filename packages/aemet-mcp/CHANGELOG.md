@@ -5,6 +5,13 @@ All notable changes to `aemet-mcp` are documented here. This project follows
 
 ## [Unreleased]
 
+## [0.3.2] — 2026-10-12
+
+### Dependencies
+
+- `@modelcontextprotocol/sdk` 1.30.1 → 1.32.1.
+- `aemet-client` 0.5.1, which updates `fast-xml-parser` to 5.11.2.
+
 ## [0.3.1] — 2026-10-02
 
 ### Changed
