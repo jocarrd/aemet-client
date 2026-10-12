@@ -4,6 +4,12 @@ All notable changes to `aemet-client` are documented here. This project follows
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html). While the package is
 below 1.0, breaking changes land in minor releases.
 
+## [0.5.1] — 2026-10-12
+
+### Dependencies
+
+- `fast-xml-parser` 5.11.1 → 5.11.2.
+
 ## [0.5.0] — 2026-09-12
 
 Everything below was measured against the live API with a valid key and
