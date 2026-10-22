@@ -10,7 +10,7 @@ import { registerMaritimeTool } from "./tools/maritime.js";
 import { registerAirQualityTool } from "./tools/air-quality.js";
 
 export const SERVER_NAME = "aemet-mcp";
-export const SERVER_VERSION = "0.3.2";
+export const SERVER_VERSION = "0.3.3";
 
 export interface CreateServerOptions {
   apiKey?: string;

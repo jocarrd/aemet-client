@@ -5,6 +5,12 @@ All notable changes to `aemet-mcp` are documented here. This project follows
 
 ## [Unreleased]
 
+## [0.3.3] — 2026-10-22
+
+### Dependencies
+
+- `zod` 4.6.5 → 4.6.7.
+
 ## [0.3.2] — 2026-10-12
 
 ### Dependencies
