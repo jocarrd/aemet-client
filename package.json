@@ -27,10 +27,10 @@
     "pnpm": ">=10"
   },
   "devDependencies": {
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "prettier": "^3.9.10",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.2"
+    "typescript-eslint": "^8.72.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
