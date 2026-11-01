@@ -65,12 +65,12 @@
     "node": ">=20.19"
   },
   "devDependencies": {
-    "@types/node": "^26.6.5",
-    "@vitest/coverage-v8": "^5.0.4",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "^5.0.5",
     "tsup": "^9.0.0",
     "typescript": "^6.0.3",
-    "vite": "^8.3.4",
-    "vitest": "^5.0.4"
+    "vite": "^8.3.5",
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "fast-xml-parser": "^5.11.2"
